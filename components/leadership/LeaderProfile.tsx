@@ -31,7 +31,7 @@ export default function LeaderProfile({
         </div>
 
         <div className="flex flex-1 flex-col">
-          <h2 className="mb-4 text-2xl italic text-brand-blue sm:text-3xl">
+          <h2 className="mb-4 font-serif text-3xl font-bold tracking-tight text-brand-blue">
             {heading}
           </h2>
           <p className="mb-8 text-base leading-relaxed text-foreground/90 sm:text-lg">

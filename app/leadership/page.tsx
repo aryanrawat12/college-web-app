@@ -2,7 +2,7 @@ import LeaderProfile from "@/components/leadership/LeaderProfile";
 import PageHeaderImage from "@/components/shared/PageHeaderImage";
 
 export const metadata = {
-  title: "Leadership | ABGI",
+  title: "Leadership",
 };
 
 const leaderMessage =

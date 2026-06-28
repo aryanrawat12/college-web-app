@@ -2,7 +2,7 @@ import ContentSection from "@/components/shared/ContentSection";
 import PageHeaderImage from "@/components/shared/PageHeaderImage";
 
 export const metadata = {
-  title: "About | ABGI",
+  title: "About",
 };
 
 export default function AboutPage() {

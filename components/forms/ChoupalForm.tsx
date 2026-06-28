@@ -41,6 +41,15 @@ export default function ChoupalForm() {
     if (!valid) {
       setShowError(true);
       setSubmitMessage(null);
+      const order: [string, string][] = [
+        ["name", name],
+        ["enrollment", enrollmentNumber],
+        ["programme", programme],
+        ["year", year],
+        ["description", description],
+      ];
+      const firstEmpty = order.find(([, value]) => !isFilled(value));
+      if (firstEmpty) document.getElementById(firstEmpty[0])?.focus();
       return;
     }
 
@@ -90,10 +99,10 @@ export default function ChoupalForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-lg rounded-xl bg-brand-blue px-6 py-8 shadow-xl sm:px-8 sm:py-10"
+      className="mx-auto w-full max-w-lg rounded-2xl bg-brand-blue px-6 py-8 shadow-xl sm:px-8 sm:py-10"
       noValidate
     >
-      <h2 className="mb-8 text-center text-2xl font-bold text-white sm:text-3xl">
+      <h2 className="mb-8 text-center font-serif text-2xl font-bold text-white sm:text-3xl">
         Grievance Form
       </h2>
 
@@ -106,6 +115,7 @@ export default function ChoupalForm() {
             id="name"
             name="name"
             type="text"
+            autoComplete="name"
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -113,7 +123,7 @@ export default function ChoupalForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your full name"
+            placeholder="e.g. Aman Sharma"
             disabled={submitting}
           />
         </div>
@@ -126,6 +136,8 @@ export default function ChoupalForm() {
             id="enrollment"
             name="enrollment"
             type="text"
+            autoComplete="off"
+            spellCheck={false}
             value={enrollmentNumber}
             onChange={(e) => {
               setEnrollmentNumber(e.target.value);
@@ -133,7 +145,7 @@ export default function ChoupalForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your enrollment number"
+            placeholder="e.g. ABGI2026001"
             disabled={submitting}
           />
         </div>
@@ -203,7 +215,7 @@ export default function ChoupalForm() {
               setSubmitMessage(null);
             }}
             className={`${formInputClass} min-h-[100px] resize-y`}
-            placeholder="Describe your grievance"
+            placeholder="Describe your grievance…"
             disabled={submitting}
           />
         </div>
@@ -223,6 +235,7 @@ export default function ChoupalForm() {
               : "text-red-300"
           }`}
           role="status"
+          aria-live="polite"
         >
           {submitMessage.text}
         </p>
@@ -231,7 +244,7 @@ export default function ChoupalForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-6 w-full rounded-md bg-brand-yellow py-3 text-sm font-semibold text-brand-blue transition-colors hover:bg-brand-yellow-hover disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-6 w-full rounded-lg bg-brand-yellow py-3 text-sm font-bold text-white transition-colors hover:bg-brand-yellow-hover disabled:cursor-not-allowed disabled:opacity-70"
       >
         {submitting ? "Submitting…" : "Submit"}
       </button>

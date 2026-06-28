@@ -1,3 +1,5 @@
+import CourseDetailTable from "@/components/department/CourseDetailTable";
+import DepartmentCTA from "@/components/department/DepartmentCTA";
 import SectionInfrastructure from "@/components/department/SectionInfrastructure";
 import SectionObjectives from "@/components/department/SectionObjectives";
 import SectionOverview from "@/components/department/SectionOverview";
@@ -5,9 +7,11 @@ import SectionProgrammes from "@/components/department/SectionProgrammes";
 import DepartmentSubheading from "@/components/department/DepartmentSubheading";
 import HeroCarousel from "@/components/shared/HeroCarousel";
 import TextMarquee from "@/components/shared/TextMarquee";
+import Link from "next/link";
+import { routes } from "@/lib/site";
 
 export const metadata = {
-  title: "Teaching Education | ABGI",
+  title: "Teaching Education (B.Ed & D.El.Ed)",
 };
 
 export default function TeachingEducationPage() {
@@ -87,10 +91,26 @@ export default function TeachingEducationPage() {
           professional excellence and industry readiness:
         </p>
         <ul className="list-inside list-disc space-y-2 pl-2">
-          <li>Diploma in Education (D.El.Ed) — Diploma Program</li>
-          <li>Bachelor of Education (B.Ed) — Undergraduate Program</li>
+          <li>Diploma in Elementary Education (D.El.Ed) — Diploma Programme</li>
+          <li>Bachelor of Education (B.Ed) — Undergraduate Programme</li>
         </ul>
       </SectionProgrammes>
+
+      <CourseDetailTable dept="education" />
+
+      <div className="container-page -mt-4 pb-2">
+        <p className="rounded-md border border-brand-yellow/40 bg-brand-yellow/10 px-4 py-3 text-sm text-brand-blue">
+          As required by NCTE, the institution&rsquo;s recognition orders and
+          public self-disclosure are available on the{" "}
+          <Link
+            href={routes.mandatoryDisclosures}
+            className="font-semibold underline underline-offset-2 hover:text-brand-yellow"
+          >
+            Mandatory Disclosures
+          </Link>{" "}
+          page.
+        </p>
+      </div>
 
       <SectionInfrastructure>
         <DepartmentSubheading>
@@ -120,6 +140,8 @@ export default function TeachingEducationPage() {
           <li>Curriculum and teaching-learning resource materials</li>
         </ul>
       </SectionInfrastructure>
+
+      <DepartmentCTA programmeName="our B.Ed & D.El.Ed programmes" />
     </>
   );
 }

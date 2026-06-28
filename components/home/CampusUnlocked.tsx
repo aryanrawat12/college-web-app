@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { SectionHeading } from "@/components/shared/ContentSection";
 
 type CampusUnlockedProps = {
   images: string[];
@@ -13,11 +12,16 @@ export default function CampusUnlocked({ images }: CampusUnlockedProps) {
   }
 
   return (
-    <section className="pb-10 sm:pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading>Campus Unlocked</SectionHeading>
+    <section id="campus" className="bg-background pb-16 pt-2 sm:pb-20">
+      <div className="container-page mb-6">
+        <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
+          Campus Gallery
+        </div>
+        <h2 className="font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
+          Life on campus
+        </h2>
       </div>
-      <div className="overflow-hidden bg-brand-blue/[0.03] py-4">
+      <div className="overflow-hidden border-y border-border-warm-2 bg-cream-2 py-4">
         <div className="marquee-track flex w-max flex-nowrap">
           {trackImages.map((src, index) => {
             const isExternal = src.startsWith("http");

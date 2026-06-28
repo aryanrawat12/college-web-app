@@ -1,7 +1,7 @@
 import EnquiryForm from "@/components/forms/EnquiryForm";
 
 export const metadata = {
-  title: "Enquiry | ABGI",
+  title: "Enquiry",
   description: "Apply to Akhil Bharti Group of Institutes",
 };
 

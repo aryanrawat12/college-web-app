@@ -1,3 +1,5 @@
+import CourseDetailTable from "@/components/department/CourseDetailTable";
+import DepartmentCTA from "@/components/department/DepartmentCTA";
 import SectionInfrastructure from "@/components/department/SectionInfrastructure";
 import SectionObjectives from "@/components/department/SectionObjectives";
 import SectionOverview from "@/components/department/SectionOverview";
@@ -7,7 +9,7 @@ import HeroCarousel from "@/components/shared/HeroCarousel";
 import TextMarquee from "@/components/shared/TextMarquee";
 
 export const metadata = {
-  title: "Management | ABGI",
+  title: "Management",
 };
 
 export default function ManagementPage() {
@@ -71,6 +73,8 @@ export default function ManagementPage() {
         </ul>
       </SectionProgrammes>
 
+      <CourseDetailTable dept="management" />
+
       <SectionInfrastructure>
         <DepartmentSubheading>
           Classrooms &amp; Smart Learning Facilities
@@ -96,6 +100,8 @@ export default function ManagementPage() {
           research-oriented academic engagement.
         </p>
       </SectionInfrastructure>
+
+      <DepartmentCTA programmeName="our MBA programme" />
     </>
   );
 }

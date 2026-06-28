@@ -1,12 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0b1f4a;
-  --brand-blue: #0b1f4a;
-  --brand-blue-dark: #071633;
-  --brand-yellow: #f5c518;
-  --brand-yellow-hover: #ddb310;
+  --background: #faf8f3; /* cream */
+  --foreground: #1c2530; /* ink */
+
+  /* Brand — names kept (brand-blue / brand-yellow) but repointed to the
+     warmer design palette so existing utility classes stay valid. */
+  --brand-blue: #16335f; /* primary navy */
+  --brand-blue-dark: #0e2444; /* deep navy (bands, footer CTA) */
+  --brand-navy-deep: #0a1c36; /* darkest navy (footer base) */
+  --brand-yellow: #d6862a; /* warm gold (accent / CTA) */
+  --brand-yellow-hover: #bf7320; /* gold hover */
+  --brand-gold-light: #e3a857; /* light gold (on-navy eyebrows) */
+
+  /* Neutrals */
+  --surface: #ffffff;
+  --muted: #4d5562;
+  --faint: #7c8290;
+  --border: #e6e0d4;
+  --border-2: #e9e3d6;
+  --cream-2: #f4f1ea;
+  --tint: #f7f4ee;
 }
 
 @theme inline {
@@ -14,16 +28,77 @@
   --color-foreground: var(--foreground);
   --color-brand-blue: var(--brand-blue);
   --color-brand-blue-dark: var(--brand-blue-dark);
+  --color-brand-navy-deep: var(--brand-navy-deep);
   --color-brand-yellow: var(--brand-yellow);
   --color-brand-yellow-hover: var(--brand-yellow-hover);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand-gold-light: var(--brand-gold-light);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-border-warm: var(--border);
+  --color-border-warm-2: var(--border-2);
+  --color-cream-2: var(--cream-2);
+  --color-tint: var(--tint);
+  --font-sans: var(--font-hanken);
+  --font-serif: var(--font-source-serif);
+  --font-mono: var(--font-space-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-hanken), system-ui, sans-serif;
+  /* Guard against stray horizontal overflow (decorative bleed cards, wide
+     tables, open mega-menus) cutting off the right edge on any viewport. */
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--brand-blue);
+  color: #fff;
+}
+
+/* Serif display family for headings (design uses Source Serif 4) */
+.font-serif {
+  font-family: var(--font-source-serif), Georgia, serif;
+}
+
+/* Headings avoid widows / awkward wraps (guideline: text-wrap balance) */
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: balance;
+}
+
+/* Shared layout helpers */
+.section {
+  padding-block: 3.5rem;
+}
+@media (min-width: 768px) {
+  .section {
+    padding-block: 5rem;
+  }
+}
+.container-page {
+  margin-inline: auto;
+  max-width: 80rem; /* matches max-w-7xl */
+  padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .container-page {
+    padding-inline: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .container-page {
+    padding-inline: 2rem;
+  }
+}
+
+/* Anchored headings clear the fixed header */
+:target {
+  scroll-margin-top: 9rem;
 }
 
 @keyframes marquee-scroll {
@@ -68,4 +143,67 @@ body {
 
 .vertical-scroll-track:hover {
   animation-play-state: paused;
+}
+
+/* Dropdown / mega-menu reveal (from design) */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.18s ease;
+}
+
+/* Scroll-reveal — sections fade/slide up as they enter the viewport.
+   Toggled by the <Reveal> component via IntersectionObserver. */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Hide scrollbar on the horizontally-scrolling nav */
+.navscroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.navscroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Respect reduced-motion: stop all marquees/auto-scroll, neutralise transforms */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track,
+  .marquee-single,
+  .vertical-scroll-track,
+  .fade-up {
+    animation: none !important;
+    transform: none !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

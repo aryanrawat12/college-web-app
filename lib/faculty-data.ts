@@ -22,19 +22,19 @@ export const facultyMembers: FacultyMember[] = [
   {
     name: "Dr. Meena Joshi",
     designation:
-      "Professor, Department of Management, Akhil Bharti School of Management",
+      "Professor, Department of Management, Akhil Bharti Institute of Management",
     bio: "Leads courses in strategic management and organizational behavior with industry consulting experience.",
   },
   {
     name: "Dr. Vikram Singh",
     designation:
-      "Associate Professor, Department of Management, Akhil Bharti School of Management",
+      "Associate Professor, Department of Management, Akhil Bharti Institute of Management",
     bio: "Teaches finance and analytics, helping students build data-driven decision-making skills.",
   },
   {
     name: "Ms. Kavita Rao",
     designation:
-      "Assistant Professor, Department of Management, Akhil Bharti School of Management",
+      "Assistant Professor, Department of Management, Akhil Bharti Institute of Management",
     bio: "Passionate about marketing and entrepreneurship, mentoring student-led business initiatives.",
   },
   {

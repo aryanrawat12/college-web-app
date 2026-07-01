@@ -306,6 +306,45 @@ export async function fetchLeadership() {
   };
 }
 
+export type PaymentLink = {
+  institute: string;
+  description: string;
+  url: string;
+};
+
+const FALLBACK_PAYMENT_LINKS: PaymentLink[] = [
+  {
+    institute: "Institute of Pharmacy",
+    description: "Pay D.Pharm, B.Pharm & M.Pharm fees securely online.",
+    url: "#",
+  },
+  {
+    institute: "Institute of Management",
+    description: "Pay MBA programme fees securely online.",
+    url: "#",
+  },
+  {
+    institute: "Institute of Education",
+    description: "Pay D.El.Ed & B.Ed fees securely online.",
+    url: "#",
+  },
+];
+
+export async function fetchPaymentLinks(): Promise<PaymentLink[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return FALLBACK_PAYMENT_LINKS;
+  const { data, error } = await supabase
+    .from("payment_links")
+    .select("institute, description, url")
+    .order("sort", { ascending: true });
+  if (error || !data?.length) return FALLBACK_PAYMENT_LINKS;
+  return data.map((r) => ({
+    institute: r.institute,
+    description: r.description ?? "",
+    url: r.url,
+  }));
+}
+
 export type SiteSettings = {
   helpline: string;
   whatsapp: string;

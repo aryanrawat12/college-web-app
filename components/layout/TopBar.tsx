@@ -54,12 +54,7 @@ export default function TopBar() {
             Portal Login
           </a>
           <span className="text-white/25">|</span>
-          <a
-            href={siteConfig.paymentUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={utilLinkClass}
-          >
+          <a href="/payment" className={utilLinkClass}>
             Fee Payment
           </a>
           <span className="text-white/25">|</span>

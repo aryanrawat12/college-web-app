@@ -282,6 +282,12 @@ export type Database = {
         Update: { created_at?: string; description?: string; id?: never; sort?: number }
         Relationships: []
       }
+      payment_links: {
+        Row: { description: string | null; id: number; institute: string; sort: number; url: string }
+        Insert: { description?: string | null; id?: never; institute: string; sort?: number; url: string }
+        Update: { description?: string | null; id?: never; institute?: string; sort?: number; url?: string }
+        Relationships: []
+      }
       placement_record: {
         Row: { highest: string | null; id: number; offers: number | null; placed: string | null; sort: number; year: string }
         Insert: { highest?: string | null; id?: never; offers?: number | null; placed?: string | null; sort?: number; year: string }

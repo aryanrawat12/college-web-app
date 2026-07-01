@@ -58,4 +58,5 @@ export const routes = {
   privacy: "/privacy-policy",
   terms: "/terms",
   programmes: "/programmes",
+  payment: "/payment",
 } as const;

@@ -78,6 +78,19 @@ export const adminTables: TableConfig[] = [
       { name: "sort", label: "Sort", type: "number" },
     ],
   },
+  {
+    table: "payment_links",
+    label: "Payment Links",
+    group: "Site",
+    orderBy: { column: "sort", ascending: true },
+    listFields: ["institute", "url"],
+    fields: [
+      { name: "institute", label: "Institute" },
+      { name: "description", label: "Description", type: "textarea" },
+      { name: "url", label: "Payment URL", type: "url" },
+      { name: "sort", label: "Sort", type: "number" },
+    ],
+  },
   // ── Academics ──
   {
     table: "programmes",

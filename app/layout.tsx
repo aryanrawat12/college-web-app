@@ -1,28 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Hanken_Grotesk, Source_Serif_4, Space_Mono } from "next/font/google";
+import { Lora } from "next/font/google";
 import BottomBar from "@/components/layout/BottomBar";
 import CopyRights from "@/components/layout/CopyRights";
 import NavBar from "@/components/layout/NavBar";
 import TopBar from "@/components/layout/TopBar";
 import FloatingActions from "@/components/shared/FloatingActions";
+import { fetchContactInfo } from "@/lib/queries";
 import "./globals.css";
 
-const hanken = Hanken_Grotesk({
-  variable: "--font-hanken",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
-
-const sourceSerif = Source_Serif_4({
-  variable: "--font-source-serif",
+// Lora everywhere — one family for sans/serif/mono (see globals.css).
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-});
-
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -39,15 +29,16 @@ export const viewport: Viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const contact = await fetchContactInfo();
   return (
     <html
       lang="en"
-      className={`${hanken.variable} ${sourceSerif.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${lora.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <a
@@ -58,7 +49,7 @@ export default function RootLayout({
         </a>
 
         <header className="fixed top-0 right-0 left-0 z-50 border-b border-border-warm bg-background/90 backdrop-blur-md">
-          <TopBar />
+          <TopBar contact={contact} />
           <NavBar />
         </header>
 
@@ -66,9 +57,9 @@ export default function RootLayout({
           {children}
         </main>
 
-        <FloatingActions />
+        <FloatingActions contact={contact} />
 
-        <BottomBar />
+        <BottomBar contact={contact} />
         <CopyRights />
       </body>
     </html>

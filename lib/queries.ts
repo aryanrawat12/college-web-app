@@ -7,6 +7,8 @@ import {
   eventImages as fallbackEventImages,
   notices as fallbackNotices,
   accreditations as fallbackAccreditations,
+  facilities as fallbackFacilities,
+  whyChooseUs as fallbackWhyChooseUs,
   heroStats as fallbackStats,
   leadershipSnippet as fallbackLeadership,
 } from "@/lib/home-data";
@@ -22,6 +24,7 @@ import {
 import { testimonials as fallbackTestimonials } from "@/lib/testimonials-data";
 import { alumni as fallbackAlumni } from "@/lib/alumni-data";
 import { faqs as fallbackFaqs } from "@/lib/faq-data";
+import { siteConfig } from "@/lib/site";
 import { createServerSupabaseClient } from "@/lib/supabase";
 
 const DEFAULT_FACULTY_PHOTO = "/faculty/faculty.jpg";
@@ -192,6 +195,55 @@ export async function fetchAccreditations(): Promise<Accreditation[]> {
   }));
 }
 
+export type Facility = { title: string; body: string; image: string };
+
+export async function fetchFacilities(): Promise<Facility[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return fallbackFacilities;
+  const { data, error } = await supabase
+    .from("facilities")
+    .select("title, body, image_url")
+    .order("sort", { ascending: true });
+  // Fall back only when the DB is unreachable — an admin who deleted every row
+  // wants the section empty (hidden), not the demo content resurfacing.
+  if (error) return fallbackFacilities;
+  if (!data) return [];
+  return data.map((r) => ({
+    title: r.title,
+    body: r.body ?? "",
+    image: r.image_url ?? "",
+  }));
+}
+
+export async function fetchHomeSectionOrder(): Promise<string[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("home_sections")
+    .select("key")
+    .order("sort", { ascending: true });
+  if (error || !data?.length) return [];
+  return data.map((r) => r.key);
+}
+
+export type Reason = { title: string; body: string; image: string };
+
+export async function fetchWhyChooseUs(): Promise<Reason[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return fallbackWhyChooseUs;
+  const { data, error } = await supabase
+    .from("why_choose_us")
+    .select("title, body, image_url")
+    .order("sort", { ascending: true });
+  if (error) return fallbackWhyChooseUs;
+  if (!data) return [];
+  return data.map((r) => ({
+    title: r.title,
+    body: r.body ?? "",
+    image: r.image_url ?? "",
+  }));
+}
+
 export async function fetchPlacementStats() {
   const supabase = createServerSupabaseClient();
   if (!supabase) return fallbackPlacementStats;
@@ -355,10 +407,77 @@ export type SiteSettings = {
   linkedinUrl: string;
   instagramUrl: string;
   youtubeUrl: string;
+  facebookUrl: string;
   prospectusUrl: string;
   heroTitle: string;
   heroSubtitle: string;
 };
+
+export type SectionText = {
+  eyebrow: string;
+  heading: string;
+  description: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+};
+
+// Editable eyebrow/heading/description (+ hero CTA labels) per homepage
+// section, keyed by section id. Returns {} when the DB is unreachable so each
+// component falls back to its own defaults.
+export async function fetchSectionContent(): Promise<Record<string, SectionText>> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return {};
+  const { data, error } = await supabase
+    .from("section_content")
+    .select("key, eyebrow, heading, description, cta_primary, cta_secondary");
+  if (error || !data) return {};
+  const map: Record<string, SectionText> = {};
+  for (const r of data) {
+    map[r.key] = {
+      eyebrow: r.eyebrow ?? "",
+      heading: r.heading ?? "",
+      description: r.description ?? "",
+      ctaPrimary: r.cta_primary ?? "",
+      ctaSecondary: r.cta_secondary ?? "",
+    };
+  }
+  return map;
+}
+
+export type ContactInfo = {
+  helpline: string;
+  whatsapp: string;
+  emails: string[];
+  address: string;
+  mapsUrl: string;
+  mapsQuery: string;
+  linkedinUrl: string;
+  instagramUrl: string;
+  youtubeUrl: string;
+  facebookUrl: string;
+  prospectusUrl: string;
+};
+
+// Resolves the contact/social details shown in the header, footer and floating
+// actions. Values come from admin-editable site_settings; the static config is
+// used ONLY when the DB is unreachable. If the admin cleared a field it stays
+// empty here, and each consumer hides the corresponding element.
+export async function fetchContactInfo(): Promise<ContactInfo> {
+  const s = await fetchSiteSettings();
+  return {
+    helpline: s ? s.helpline : siteConfig.helpline,
+    whatsapp: s ? s.whatsapp : siteConfig.whatsapp,
+    emails: s ? s.emails : [...siteConfig.emails],
+    address: s ? s.address : siteConfig.address,
+    mapsUrl: s ? s.mapsUrl : siteConfig.mapsUrl,
+    mapsQuery: s ? s.mapsQuery : siteConfig.mapsQuery,
+    linkedinUrl: s ? s.linkedinUrl : siteConfig.linkedinCompanyUrl,
+    instagramUrl: s ? s.instagramUrl : siteConfig.instagramUrl,
+    youtubeUrl: s ? s.youtubeUrl : siteConfig.youtubeUrl,
+    facebookUrl: s ? s.facebookUrl : siteConfig.facebookUrl,
+    prospectusUrl: s ? s.prospectusUrl : siteConfig.prospectusUrl,
+  };
+}
 
 export async function fetchSiteSettings(): Promise<SiteSettings | null> {
   const supabase = createServerSupabaseClient();
@@ -381,6 +500,7 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
     linkedinUrl: data.linkedin_url ?? "",
     instagramUrl: data.instagram_url ?? "",
     youtubeUrl: data.youtube_url ?? "",
+    facebookUrl: data.facebook_url ?? "",
     prospectusUrl: data.prospectus_url ?? "",
     heroTitle: data.hero_title ?? "",
     heroSubtitle: data.hero_subtitle ?? "",

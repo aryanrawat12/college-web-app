@@ -42,6 +42,75 @@ export type Database = {
         }
         Relationships: []
       }
+      facilities: {
+        Row: {
+          body: string | null
+          id: number
+          image_url: string | null
+          sort: number
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          id?: never
+          image_url?: string | null
+          sort?: number
+          title: string
+        }
+        Update: {
+          body?: string | null
+          id?: never
+          image_url?: string | null
+          sort?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      home_sections: {
+        Row: {
+          id: number
+          key: string
+          label: string
+          sort: number
+        }
+        Insert: {
+          id?: never
+          key: string
+          label: string
+          sort?: number
+        }
+        Update: {
+          id?: never
+          key?: string
+          label?: string
+          sort?: number
+        }
+        Relationships: []
+      }
+      why_choose_us: {
+        Row: {
+          body: string | null
+          id: number
+          image_url: string | null
+          sort: number
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          id?: never
+          image_url?: string | null
+          sort?: number
+          title: string
+        }
+        Update: {
+          body?: string | null
+          id?: never
+          image_url?: string | null
+          sort?: number
+          title?: string
+        }
+        Relationships: []
+      }
       alumni: {
         Row: {
           batch: string | null
@@ -369,6 +438,7 @@ export type Database = {
           email1: string | null
           email2: string | null
           email3: string | null
+          facebook_url: string | null
           helpline: string | null
           hero_subtitle: string | null
           hero_title: string | null
@@ -386,6 +456,7 @@ export type Database = {
           email1?: string | null
           email2?: string | null
           email3?: string | null
+          facebook_url?: string | null
           helpline?: string | null
           hero_subtitle?: string | null
           hero_title?: string | null
@@ -403,6 +474,7 @@ export type Database = {
           email1?: string | null
           email2?: string | null
           email3?: string | null
+          facebook_url?: string | null
           helpline?: string | null
           hero_subtitle?: string | null
           hero_title?: string | null
@@ -414,6 +486,39 @@ export type Database = {
           prospectus_url?: string | null
           whatsapp?: string | null
           youtube_url?: string | null
+        }
+        Relationships: []
+      }
+      section_content: {
+        Row: {
+          cta_primary: string | null
+          cta_secondary: string | null
+          description: string | null
+          eyebrow: string | null
+          heading: string | null
+          id: number
+          key: string
+          sort: number
+        }
+        Insert: {
+          cta_primary?: string | null
+          cta_secondary?: string | null
+          description?: string | null
+          eyebrow?: string | null
+          heading?: string | null
+          id?: never
+          key: string
+          sort?: number
+        }
+        Update: {
+          cta_primary?: string | null
+          cta_secondary?: string | null
+          description?: string | null
+          eyebrow?: string | null
+          heading?: string | null
+          id?: never
+          key?: string
+          sort?: number
         }
         Relationships: []
       }

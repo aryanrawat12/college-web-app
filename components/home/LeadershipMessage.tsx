@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { SectionText } from "@/lib/queries";
 import { leadershipSnippet as fallbackLeader } from "@/lib/home-data";
 import { routes } from "@/lib/site";
 
@@ -7,10 +8,13 @@ type Leader = { name: string; role: string; message: string; image: string };
 
 export default function LeadershipMessage({
   data = fallbackLeader,
+  content,
 }: {
   data?: Leader;
+  content?: SectionText;
 }) {
   const leadershipSnippet = data;
+  const eyebrow = content ? content.eyebrow : "From the Leadership";
   return (
     <section className="bg-background">
       <div className="container-page py-16 sm:py-20">
@@ -25,9 +29,11 @@ export default function LeadershipMessage({
             />
           </div>
           <div>
-            <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
-              From the Leadership
-            </div>
+            {eyebrow && (
+              <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
+                {eyebrow}
+              </div>
+            )}
             <blockquote className="font-serif text-xl leading-relaxed text-brand-blue sm:text-2xl">
               &ldquo;{leadershipSnippet.message}&rdquo;
             </blockquote>

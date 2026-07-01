@@ -1,4 +1,6 @@
 import Link from "next/link";
+import CountUp from "@/components/shared/CountUp";
+import type { SectionText } from "@/lib/queries";
 import {
   placementStats as fallbackStats,
   recruiters as fallbackRecruiters,
@@ -11,10 +13,19 @@ type Recruiter = { name: string; logo: string | null };
 export default function PlacementsHighlight({
   stats = fallbackStats,
   recruiters = fallbackRecruiters,
+  content,
 }: {
   stats?: Stat[];
   recruiters?: Recruiter[];
+  content?: SectionText;
 }) {
+  const eyebrow = content ? content.eyebrow : "Placements & Training";
+  const heading = content
+    ? content.heading
+    : "A dedicated cell that backs every student.";
+  const description = content
+    ? content.description
+    : "Our Training & Placement Cell runs year-round training, aptitude prep and recruitment drives across pharmacy, management and education — connecting students to industry and higher-study routes.";
   return (
     <section
       id="placements"
@@ -23,26 +34,33 @@ export default function PlacementsHighlight({
     >
       <div className="container-page grid items-center gap-14 py-16 sm:py-20 lg:grid-cols-[1fr_1.05fr]">
         <div>
-          <div className="mb-3.5 font-mono text-xs uppercase tracking-[0.18em] text-brand-gold-light">
-            Placements &amp; Training
-          </div>
-          <h2 className="font-serif text-3xl font-bold leading-tight tracking-tight sm:text-[40px]">
-            A dedicated cell that backs every student.
-          </h2>
-          <p className="mt-4 max-w-md text-base leading-relaxed text-[#b9c4d6]">
-            Our Training &amp; Placement Cell runs year-round training, aptitude
-            prep and recruitment drives across pharmacy, management and
-            education — connecting students to industry and higher-study routes.
-          </p>
+          {eyebrow && (
+            <div className="mb-3.5 font-mono text-xs uppercase tracking-[0.18em] text-brand-gold-light">
+              {eyebrow}
+            </div>
+          )}
+          {heading && (
+            <h2 className="font-serif text-3xl font-bold leading-tight tracking-tight sm:text-[40px]">
+              {heading}
+            </h2>
+          )}
+          {description && (
+            <p className="mt-4 max-w-md text-base leading-relaxed text-[#b9c4d6]">
+              {description}
+            </p>
+          )}
           <div className="mt-8 grid max-w-lg grid-cols-2 gap-4 sm:grid-cols-2">
-            {stats.map((ps) => (
+            {stats.map((ps, i) => (
               <div
                 key={ps.label}
-                className="rounded-2xl border border-white/10 bg-white/[0.06] p-4"
+                className="stagger-item rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition-transform duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                style={{ "--d": `${i * 90}ms` } as React.CSSProperties}
               >
-                <div className="font-serif text-xl font-bold leading-tight text-white">
-                  {ps.value}
-                </div>
+                <CountUp
+                  value={ps.value}
+                  className="block font-serif text-xl font-bold leading-tight text-white"
+                  style={{ fontVariantNumeric: "tabular-nums" }}
+                />
                 <div className="mt-1.5 text-[12px] text-[#9fb0cc]">
                   {ps.label}
                 </div>
@@ -61,11 +79,12 @@ export default function PlacementsHighlight({
             </span>
           </div>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-2">
-            {recruiters.map((r) => (
+            {recruiters.map((r, i) => (
               <li
                 key={r.name}
                 translate="no"
-                className="flex h-14 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-3"
+                className="stagger-item flex h-14 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-3 transition-transform duration-300 hover:-translate-y-0.5 hover:border-white/25"
+                style={{ "--d": `${i * 60}ms` } as React.CSSProperties}
               >
                 {r.logo ? (
                   // eslint-disable-next-line @next/next/no-img-element

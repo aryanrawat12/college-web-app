@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import CampusUnlocked from "@/components/home/CampusUnlocked";
 import CredibilityBand from "@/components/home/CredibilityBand";
 import FacilitiesGrid from "@/components/home/FacilitiesGrid";
@@ -14,14 +15,18 @@ import {
   fetchAccreditations,
   fetchAnnouncements,
   fetchEventMarqueeImages,
+  fetchFacilities,
+  fetchHomeSectionOrder,
   fetchLeadership,
   fetchNotices,
   fetchPlacementStats,
   fetchProgrammes,
   fetchRecruiters,
+  fetchSectionContent,
   fetchSiteSettings,
   fetchStats,
   fetchTestimonials,
+  fetchWhyChooseUs,
 } from "@/lib/queries";
 
 export const metadata = {
@@ -45,6 +50,10 @@ export default async function HomePage() {
     testimonials,
     leadership,
     settings,
+    facilities,
+    reasons,
+    sectionOrder,
+    sc,
   ] = await Promise.all([
     fetchAnnouncements(),
     fetchNotices(),
@@ -57,42 +66,100 @@ export default async function HomePage() {
     fetchTestimonials(),
     fetchLeadership(),
     fetchSiteSettings(),
+    fetchFacilities(),
+    fetchWhyChooseUs(),
+    fetchHomeSectionOrder(),
+    fetchSectionContent(),
   ]);
+
+  // Section key → rendered node. Order comes from the admin-editable
+  // `home_sections` table; any section missing from it still renders (appended
+  // in the default order) so reordering can never hide content. Hero is pinned.
+  const sections: Record<string, React.ReactNode> = {
+    schools: (
+      <Reveal>
+        <SchoolsGrid content={sc.schools} />
+      </Reveal>
+    ),
+    credibility: (
+      <CredibilityBand stats={stats} accreditations={accreditations} />
+    ),
+    programmes: (
+      <Reveal>
+        <ProgramFinder programs={programmes} content={sc.finder} />
+      </Reveal>
+    ),
+    placements: (
+      <Reveal>
+        <PlacementsHighlight
+          stats={placementStats}
+          recruiters={recruiters}
+          content={sc.placements}
+        />
+      </Reveal>
+    ),
+    testimonials: (
+      <Reveal>
+        <Testimonials items={testimonials} content={sc.testimonials} />
+      </Reveal>
+    ),
+    why: (
+      <Reveal>
+        <WhyChooseUs reasons={reasons} content={sc.why} />
+      </Reveal>
+    ),
+    leadership: (
+      <Reveal>
+        <LeadershipMessage data={leadership} content={sc.leadership} />
+      </Reveal>
+    ),
+    facilities: (
+      <Reveal>
+        <FacilitiesGrid facilities={facilities} content={sc.facilities} />
+      </Reveal>
+    ),
+    campus: (
+      <Reveal>
+        <CampusUnlocked images={eventImages} content={sc.campus} />
+      </Reveal>
+    ),
+    updates: (
+      <Reveal>
+        <LatestUpdates
+          announcements={announcements}
+          notices={notices}
+          content={sc.updates}
+        />
+      </Reveal>
+    ),
+  };
+  const DEFAULT_ORDER = [
+    "schools",
+    "credibility",
+    "programmes",
+    "placements",
+    "testimonials",
+    "why",
+    "leadership",
+    "facilities",
+    "campus",
+    "updates",
+  ];
+  const order = [
+    ...sectionOrder.filter((k) => sections[k]),
+    ...DEFAULT_ORDER.filter((k) => !sectionOrder.includes(k)),
+  ];
 
   return (
     <>
       <Hero
         title={settings?.heroTitle || undefined}
         subtitle={settings?.heroSubtitle || undefined}
+        content={sc.hero}
       />
-      <Reveal>
-        <SchoolsGrid />
-      </Reveal>
-      <CredibilityBand stats={stats} accreditations={accreditations} />
-      <Reveal>
-        <ProgramFinder programs={programmes} />
-      </Reveal>
-      <Reveal>
-        <PlacementsHighlight stats={placementStats} recruiters={recruiters} />
-      </Reveal>
-      <Reveal>
-        <Testimonials items={testimonials} />
-      </Reveal>
-      <Reveal>
-        <WhyChooseUs />
-      </Reveal>
-      <Reveal>
-        <LeadershipMessage data={leadership} />
-      </Reveal>
-      <Reveal>
-        <FacilitiesGrid />
-      </Reveal>
-      <Reveal>
-        <CampusUnlocked images={eventImages} />
-      </Reveal>
-      <Reveal>
-        <LatestUpdates announcements={announcements} notices={notices} />
-      </Reveal>
+      {order.map((key) => (
+        <Fragment key={key}>{sections[key]}</Fragment>
+      ))}
     </>
   );
 }

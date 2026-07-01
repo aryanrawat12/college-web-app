@@ -98,7 +98,7 @@ export default function MobileNav() {
             role="dialog"
             aria-modal="true"
             aria-label="Site menu"
-            className="absolute top-0 right-0 flex h-full w-[85%] max-w-sm flex-col overflow-y-auto overscroll-contain bg-background shadow-xl"
+            className="absolute top-0 right-0 flex h-[100dvh] w-[85%] max-w-sm flex-col bg-background shadow-xl"
           >
             <div className="flex items-center justify-between border-b border-border-warm px-4 py-3">
               <span className="font-serif text-base font-bold text-brand-blue">
@@ -122,7 +122,7 @@ export default function MobileNav() {
               </button>
             </div>
 
-            <nav aria-label="Mobile navigation" className="flex-1 px-2 py-3">
+            <nav aria-label="Mobile navigation" className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-3">
               <ItemLink
                 item={{ label: "Home", href: routes.home }}
                 pathname={pathname}
@@ -163,7 +163,7 @@ export default function MobileNav() {
               </div>
             </nav>
 
-            <div className="space-y-2 border-t border-border-warm p-4">
+            <div className="shrink-0 space-y-2 border-t border-border-warm p-4">
               <Link
                 href={routes.apply}
                 onClick={() => setOpen(false)}

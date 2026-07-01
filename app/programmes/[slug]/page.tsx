@@ -72,7 +72,6 @@ export default async function ProgrammePage({
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
             <Detail label="Duration" value={program.duration} />
             <Detail label="Intake" value={program.seats} />
-            <Detail label="Fees" value={program.fee} />
             <Detail label="Mode" value={program.mode} />
             <Detail label="Approvals" value={program.approval} />
           </div>

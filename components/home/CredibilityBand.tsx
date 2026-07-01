@@ -1,3 +1,4 @@
+import CountUp from "@/components/shared/CountUp";
 import { accreditations as fallbackAccreditations } from "@/lib/home-data";
 import { heroStats as fallbackStats } from "@/lib/home-data";
 
@@ -28,12 +29,11 @@ export default function CredibilityBand({
                 i < stats.length - 1 ? "md:border-r md:border-white/10" : ""
               }`}
             >
-              <div
-                className="font-serif text-3xl font-bold leading-none text-white sm:text-[38px]"
+              <CountUp
+                value={s.value}
+                className="block font-serif text-3xl font-bold leading-none text-white sm:text-[38px]"
                 style={{ fontVariantNumeric: "tabular-nums" }}
-              >
-                {s.value}
-              </div>
+              />
               <div className="mt-2 text-[13px] font-medium text-[#aebbd0]">
                 {s.label}
               </div>

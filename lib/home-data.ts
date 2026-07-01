@@ -82,40 +82,48 @@ export const heroStats = [
   { value: "15+", label: "Years of Excellence" },
 ];
 
+// ponytail: loremflickr placeholder backgrounds; swap for real photos.
 export const whyChooseUs = [
   {
     title: "Experienced Faculty",
     body: "Qualified, research-active teachers mentoring students across pharmacy, management and education.",
+    image: "https://loremflickr.com/800/600/teacher,professor?lock=31",
   },
   {
     title: "Modern Labs & Smart Classrooms",
     body: "Well-equipped laboratories, digital classrooms and a reference library for hands-on learning.",
+    image: "https://loremflickr.com/800/600/laboratory,classroom?lock=32",
   },
   {
     title: "Industry & Hospital Training",
     body: "Industrial training, hospital exposure and field practice aligned to each programme.",
+    image: "https://loremflickr.com/800/600/hospital,training?lock=33",
   },
   {
     title: "Placement Support",
     body: "Training & placement cell supporting students with skilling, drives and career guidance.",
+    image: "https://loremflickr.com/800/600/office,interview?lock=34",
   },
   {
     title: "Recognised & Affiliated",
     body: "Programmes approved by AICTE & PCI and affiliated to RGPV, Bhopal.",
+    image: "https://loremflickr.com/800/600/university,certificate?lock=35",
   },
   {
     title: "Scholarships",
     body: "Government and merit scholarship guidance for eligible students.",
+    image: "https://loremflickr.com/800/600/graduation,students?lock=36",
   },
 ];
 
+// ponytail: loremflickr placeholder backgrounds; swap for real campus photos.
 export const facilities = [
-  { title: "Central Library", body: "Books, journals, e-resources and a quiet reading hall." },
-  { title: "Laboratories", body: "Subject-specific labs with modern instruments and equipment." },
-  { title: "Digital Classrooms", body: "Smart boards, projectors and audio-visual learning aids." },
-  { title: "Sports & Recreation", body: "Indoor and outdoor sports facilities for student wellbeing." },
-  { title: "Hostel", body: "Separate, secure residential facilities for outstation students." },
-  { title: "Cafeteria", body: "Hygienic canteen serving affordable meals on campus." },
+  { title: "Central Library", body: "Books, journals, e-resources and a quiet reading hall.", image: "https://loremflickr.com/800/600/library,books?lock=21" },
+  { title: "Laboratories", body: "Subject-specific labs with modern instruments and equipment.", image: "https://loremflickr.com/800/600/laboratory,science?lock=22" },
+  { title: "Digital Classrooms", body: "Smart boards, projectors and audio-visual learning aids.", image: "https://loremflickr.com/800/600/classroom,school?lock=23" },
+  { title: "Sports & Recreation", body: "Indoor and outdoor sports facilities for student wellbeing.", image: "https://loremflickr.com/800/600/sports,stadium?lock=24" },
+  { title: "Hostel", body: "Separate, secure residential facilities for outstation students.", image: "https://loremflickr.com/800/600/dormitory,building?lock=25" },
+  { title: "Cafeteria", body: "Hygienic canteen serving affordable meals on campus.", image: "https://loremflickr.com/800/600/cafeteria,canteen?lock=26" },
 ];
 
 // Short message for the homepage leadership block.

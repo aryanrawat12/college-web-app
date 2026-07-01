@@ -1,8 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { SectionText } from "@/lib/queries";
 import { navSchools } from "@/lib/home-data";
 
-export default function SchoolsGrid() {
+export default function SchoolsGrid({ content }: { content?: SectionText }) {
+  const eyebrow = content ? content.eyebrow : "Our Institutes";
+  const heading = content
+    ? content.heading
+    : "Three institutes, each with its own home";
+  const description = content
+    ? content.description
+    : "Every stream has a dedicated page with its own accreditation, eligibility, fees and placement story — no generic funnel.";
   return (
     <section
       id="schools"
@@ -10,16 +18,19 @@ export default function SchoolsGrid() {
       aria-label="Our institutes"
     >
       <div className="container-page py-16 sm:py-20">
-        <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
-          Our Institutes
-        </div>
-        <h2 className="font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
-          Three institutes, each with its own home
-        </h2>
-        <p className="mt-3 max-w-2xl text-base text-muted">
-          Every stream has a dedicated page with its own accreditation,
-          eligibility, fees and placement story — no generic funnel.
-        </p>
+        {eyebrow && (
+          <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
+            {eyebrow}
+          </div>
+        )}
+        {heading && (
+          <h2 className="font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
+            {heading}
+          </h2>
+        )}
+        {description && (
+          <p className="mt-3 max-w-2xl text-base text-muted">{description}</p>
+        )}
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           {navSchools.map((s) => (
             <Link

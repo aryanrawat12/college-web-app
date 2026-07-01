@@ -39,15 +39,15 @@
   --color-border-warm-2: var(--border-2);
   --color-cream-2: var(--cream-2);
   --color-tint: var(--tint);
-  --font-sans: var(--font-hanken);
-  --font-serif: var(--font-source-serif);
-  --font-mono: var(--font-space-mono);
+  --font-sans: var(--font-lora);
+  --font-serif: var(--font-lora);
+  --font-mono: var(--font-lora);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-hanken), system-ui, sans-serif;
+  font-family: var(--font-lora), Georgia, serif;
   /* Guard against stray horizontal overflow (decorative bleed cards, wide
      tables, open mega-menus) cutting off the right edge on any viewport. */
   overflow-x: hidden;
@@ -58,9 +58,9 @@ body {
   color: #fff;
 }
 
-/* Serif display family for headings (design uses Source Serif 4) */
+/* Lora is the single family across the site (headings + body + mono labels) */
 .font-serif {
-  font-family: var(--font-source-serif), Georgia, serif;
+  font-family: var(--font-lora), Georgia, serif;
 }
 
 /* Headings avoid widows / awkward wraps (guideline: text-wrap balance) */
@@ -161,6 +161,34 @@ h4 {
   animation: fadeUp 0.18s ease;
 }
 
+/* Programme cards fade/slide in when the institute selector changes.
+   Per-card animation-delay is set inline for a stagger. */
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card-in {
+  animation: cardIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Stagger children in when their <Reveal> ancestor scrolls into view.
+   Per-item delay is set inline via the `--d` custom property. */
+.stagger-item {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal.is-visible .stagger-item {
+  animation: cardIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
 /* Scroll-reveal — sections fade/slide up as they enter the viewport.
    Toggled by the <Reveal> component via IntersectionObserver. */
 .reveal {
@@ -198,12 +226,18 @@ h4 {
   .marquee-track,
   .marquee-single,
   .vertical-scroll-track,
-  .fade-up {
+  .fade-up,
+  .card-in {
     animation: none !important;
     transform: none !important;
   }
   .reveal {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .stagger-item {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }

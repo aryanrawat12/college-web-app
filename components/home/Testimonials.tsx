@@ -1,14 +1,20 @@
+import type { SectionText } from "@/lib/queries";
 import { testimonials as fallbackTestimonials } from "@/lib/testimonials-data";
 
 type Item = { name: string; detail: string; quote: string; photo: string };
 
 export default function Testimonials({
   items = fallbackTestimonials,
+  content,
 }: {
   items?: Item[];
+  content?: SectionText;
 }) {
   const testimonials = items;
   if (testimonials.length === 0) return null;
+
+  const eyebrow = content ? content.eyebrow : "In Their Words";
+  const heading = content ? content.heading : "What our students say";
 
   // Duplicate the list so the marquee can loop seamlessly (-50%).
   const track = [...testimonials, ...testimonials];
@@ -19,12 +25,16 @@ export default function Testimonials({
       aria-label="Student testimonials"
     >
       <div className="container-page pt-16 sm:pt-20">
-        <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
-          In Their Words
-        </div>
-        <h2 className="mb-8 font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
-          What our students say
-        </h2>
+        {eyebrow && (
+          <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
+            {eyebrow}
+          </div>
+        )}
+        {heading && (
+          <h2 className="mb-8 font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
+            {heading}
+          </h2>
+        )}
       </div>
 
       <div

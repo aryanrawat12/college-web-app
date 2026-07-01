@@ -77,12 +77,3 @@ export const programs: Program[] = (
     careers: course.careers,
   })),
 );
-
-export const levelOptions: { label: string; value: LevelCategory | "all" }[] = [
-  { label: "All", value: "all" },
-  { label: "Diploma", value: "Diploma" },
-  { label: "UG", value: "UG" },
-  { label: "PG", value: "PG" },
-];
-
-export const streamOptions = ["All", "Pharmacy", "Management", "Education"];

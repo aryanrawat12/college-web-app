@@ -1,25 +1,34 @@
 import Image from "next/image";
+import type { SectionText } from "@/lib/queries";
 
 type CampusUnlockedProps = {
   images: string[];
+  content?: SectionText;
 };
 
-export default function CampusUnlocked({ images }: CampusUnlockedProps) {
+export default function CampusUnlocked({ images, content }: CampusUnlockedProps) {
   const trackImages = images.length > 0 ? [...images, ...images] : [];
 
   if (trackImages.length === 0) {
     return null;
   }
 
+  const eyebrow = content ? content.eyebrow : "Campus Gallery";
+  const heading = content ? content.heading : "Life on campus";
+
   return (
-    <section id="campus" className="bg-background pb-16 pt-2 sm:pb-20">
-      <div className="container-page mb-6">
-        <div className="mb-3 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
-          Campus Gallery
-        </div>
-        <h2 className="font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
-          Life on campus
-        </h2>
+    <section id="campus" className="bg-background pb-8 pt-2 sm:pb-10">
+      <div className="container-page mb-5">
+        {eyebrow && (
+          <div className="mb-2 font-mono text-xs uppercase tracking-[0.18em] text-brand-yellow">
+            {eyebrow}
+          </div>
+        )}
+        {heading && (
+          <h2 className="font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-4xl">
+            {heading}
+          </h2>
+        )}
       </div>
       <div className="overflow-hidden border-y border-border-warm-2 bg-cream-2 py-4">
         <div className="marquee-track flex w-max flex-nowrap">

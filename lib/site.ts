@@ -20,6 +20,7 @@ export const siteConfig = {
   paymentUrl:
     process.env.NEXT_PUBLIC_PAYMENT_URL ?? "https://example.com/payment",
   prospectusUrl: process.env.NEXT_PUBLIC_PROSPECTUS_URL ?? "/docs/prospectus.pdf", // ponytail: dummy PDF, swap for real prospectus
+  address: "Village-Kharpa, Ratibad, Bhopal 462044 (M.P.)",
   mapsUrl: "https://maps.app.goo.gl/wBSwuDkyxQnJ3ntCA",
   mapsCoords: "23.1719044,77.2885169", // Akhil Bharti College, Bhopal
   mapsQuery: "Akhil Bharti College, Bhopal", // named marker for map embeds
@@ -32,6 +33,9 @@ export const siteConfig = {
   youtubeUrl:
     process.env.NEXT_PUBLIC_YOUTUBE_URL ??
     "https://youtube.com/@akhilbharticollegebhopal7700",
+  facebookUrl:
+    process.env.NEXT_PUBLIC_FACEBOOK_URL ??
+    "https://www.facebook.com/akhilbharticollege",
 } as const;
 
 export const routes = {

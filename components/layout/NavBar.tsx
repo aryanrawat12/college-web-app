@@ -240,6 +240,13 @@ export default function NavBar() {
           >
             Apply Now
           </Link>
+          {/* Fee Payment surfaced in the bar on small screens (TopBar hides it < md) */}
+          <Link
+            href={routes.payment}
+            className="rounded-lg bg-brand-yellow px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-yellow-hover md:hidden"
+          >
+            Fee Payment
+          </Link>
           <MobileNav />
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 /* eslint-disable react-hooks/set-state-in-effect */
 
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
 import {
@@ -24,101 +25,24 @@ const groups: TableConfig["group"][] = [
 
 export default function AdminApp() {
   const supabase = useMemo(() => createBrowserSupabaseClient(), []);
-  const [ready, setReady] = useState(false);
-  const [authed, setAuthed] = useState(false);
-
-  useEffect(() => {
-    if (!supabase) {
-      setReady(true);
-      return;
-    }
-    supabase.auth.getSession().then(({ data }) => {
-      setAuthed(Boolean(data.session));
-      setReady(true);
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setAuthed(Boolean(session));
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [supabase]);
-
   if (!supabase)
     return (
-      <Centered>Supabase is not configured. Set env vars and reload.</Centered>
+      <div className="flex min-h-[60vh] items-center justify-center px-4 text-center text-muted">
+        Supabase is not configured. Set env vars and reload.
+      </div>
     );
-  if (!ready) return <Centered>Loading…</Centered>;
-  if (!authed) return <Login supabase={supabase} />;
   return <Dashboard supabase={supabase} />;
 }
 
-function Centered({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex min-h-[60vh] items-center justify-center px-4 text-center text-muted">
-      {children}
-    </div>
-  );
-}
-
-function Login({ supabase }: { supabase: any }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [err, setErr] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function submit(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setErr("");
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setBusy(false);
-    if (error) setErr(error.message);
-  }
-
-  return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4">
-      <form
-        onSubmit={submit}
-        className="w-full max-w-sm rounded-2xl border border-border-warm-2 bg-surface p-7 shadow-sm"
-      >
-        <h1 className="font-serif text-2xl font-bold text-brand-blue">
-          Admin Login
-        </h1>
-        <p className="mt-1 text-sm text-faint">Akhil Bharti Group of Institutes</p>
-        <label className="mt-5 block text-sm font-medium text-brand-blue">
-          Email
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border-warm-2 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none"
-          required
-        />
-        <label className="mt-4 block text-sm font-medium text-brand-blue">
-          Password
-        </label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-border-warm-2 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none"
-          required
-        />
-        {err && <p className="mt-3 text-sm text-red-600">{err}</p>}
-        <button
-          type="submit"
-          disabled={busy}
-          className="mt-5 w-full rounded-lg bg-brand-blue py-2.5 text-sm font-bold text-white hover:bg-brand-blue-dark disabled:opacity-60"
-        >
-          {busy ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
-    </div>
-  );
-}
-
 function Dashboard({ supabase }: { supabase: any }) {
+  const router = useRouter();
   const [active, setActive] = useState<TableConfig>(adminTables[0]);
+
+  async function signOut() {
+    await supabase.auth.signOut();
+    router.replace("/admin/login");
+    router.refresh();
+  }
 
   return (
     <div className="container-page grid gap-8 py-10 lg:grid-cols-[230px_1fr]">
@@ -128,7 +52,7 @@ function Dashboard({ supabase }: { supabase: any }) {
             Admin
           </span>
           <button
-            onClick={() => supabase.auth.signOut()}
+            onClick={signOut}
             className="text-xs font-semibold text-brand-yellow hover:underline"
           >
             Sign out
@@ -208,6 +132,11 @@ function TableManager({
   const [editing, setEditing] = useState<Row | null>(null);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState("");
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+
+  // Drag-to-reorder is available on any list ordered by a `sort` column.
+  const sortable =
+    !config.readOnly && !config.single && config.orderBy?.column === "sort";
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -227,6 +156,33 @@ function TableManager({
   async function remove(row: Row) {
     if (!confirm("Delete this row?")) return;
     await supabase.from(config.table).delete().eq("id", row.id);
+    await load();
+  }
+
+  async function reorder(from: number | null, to: number) {
+    setDragIndex(null);
+    if (from === null || from === to || to < 0 || to >= rows.length) return;
+    const next = [...rows];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    // Renumber sort to match the new order (optimistic), then persist.
+    const renum: Row[] = next.map((r, i) => ({ ...r, sort: i + 1 }));
+    setRows(renum);
+    // Update only the `sort` column per row — avoids the upsert insert path
+    // (id is GENERATED ALWAYS) and only touches rows that actually moved.
+    setMsg("");
+    for (const r of renum) {
+      const prev = rows.find((x) => x.id === r.id);
+      if (prev && prev.sort === r.sort) continue;
+      const { error } = await supabase
+        .from(config.table)
+        .update({ sort: r.sort })
+        .eq("id", r.id);
+      if (error) {
+        setMsg(error.message);
+        break;
+      }
+    }
     await load();
   }
 
@@ -307,9 +263,15 @@ function TableManager({
         <p className="text-faint">No rows yet.</p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border-warm-2">
+          {sortable && (
+            <p className="border-b border-border-warm-2 bg-cream-2/60 px-4 py-2 text-xs text-faint">
+              Drag rows by the ⠿ handle to reorder.
+            </p>
+          )}
           <table className="w-full text-left text-sm">
             <thead className="bg-cream-2">
               <tr>
+                {sortable && <th className="w-8 px-2 py-2.5" />}
                 {config.listFields.map((f) => (
                   <th key={f} className="px-4 py-2.5 font-semibold text-brand-blue">
                     {f}
@@ -319,8 +281,47 @@ function TableManager({
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => (
-                <tr key={r.id} className="border-t border-border-warm-2">
+              {rows.map((r, i) => (
+                <tr
+                  key={r.id}
+                  onDragOver={
+                    sortable
+                      ? (e) => {
+                          e.preventDefault();
+                          if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+                        }
+                      : undefined
+                  }
+                  onDrop={
+                    sortable
+                      ? (e) => {
+                          e.preventDefault();
+                          reorder(dragIndex, i);
+                        }
+                      : undefined
+                  }
+                  className={`border-t border-border-warm-2 ${
+                    dragIndex === i ? "opacity-40" : ""
+                  } ${sortable && dragIndex !== null && dragIndex !== i ? "hover:bg-cream-2/60" : ""}`}
+                >
+                  {sortable && (
+                    <td
+                      draggable
+                      onDragStart={(e) => {
+                        setDragIndex(i);
+                        if (e.dataTransfer) {
+                          e.dataTransfer.effectAllowed = "move";
+                          e.dataTransfer.setData("text/plain", String(i));
+                        }
+                      }}
+                      onDragEnd={() => setDragIndex(null)}
+                      className="cursor-grab select-none px-2 py-2.5 text-center text-lg leading-none text-faint active:cursor-grabbing"
+                      aria-label="Drag to reorder"
+                      title="Drag to reorder"
+                    >
+                      ⠿
+                    </td>
+                  )}
                   {config.listFields.map((f) => (
                     <td key={f} className="max-w-[260px] truncate px-4 py-2.5 text-foreground/80">
                       {String(r[f] ?? "")}
@@ -331,6 +332,28 @@ function TableManager({
                       <span className="text-xs text-faint">view only</span>
                     ) : (
                       <>
+                        {sortable && (
+                          <>
+                            <button
+                              onClick={() => reorder(i, i - 1)}
+                              disabled={i === 0}
+                              aria-label="Move up"
+                              title="Move up"
+                              className="mr-1 rounded px-1.5 text-brand-blue hover:bg-cream-2 disabled:opacity-30"
+                            >
+                              ↑
+                            </button>
+                            <button
+                              onClick={() => reorder(i, i + 1)}
+                              disabled={i === rows.length - 1}
+                              aria-label="Move down"
+                              title="Move down"
+                              className="mr-3 rounded px-1.5 text-brand-blue hover:bg-cream-2 disabled:opacity-30"
+                            >
+                              ↓
+                            </button>
+                          </>
+                        )}
                         <button
                           onClick={() => setEditing(r)}
                           className="text-sm font-semibold text-brand-blue hover:underline"

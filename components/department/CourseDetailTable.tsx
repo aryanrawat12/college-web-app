@@ -65,11 +65,10 @@ export default function CourseDetailTable({ dept }: Props) {
               <p className="mt-2.5 text-[14.5px] leading-relaxed text-muted">
                 {c.description}
               </p>
-              <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+              <div className="mt-4 grid grid-cols-3 gap-2.5">
                 <Detail label="Duration" value={c.duration} />
                 <Detail label="Intake" value={c.intake} />
                 <Detail label="Mode" value={c.mode} />
-                <Detail label="Fees" value={c.fees} />
               </div>
               <div className="mt-4 space-y-1.5 text-[13.5px] text-foreground/80">
                 <p>

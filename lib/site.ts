@@ -24,4 +24,5 @@ export const routes = {
   faculty: "/faculty",
   campusLife: "/campus-events",
   choupal: "/choupal",
+  newsTracker: "/news-tracker",
 } as const;

@@ -16,6 +16,19 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Apex Counsel (legal research bot)
+
+Ultimate Indian legal research desk at [`/legal-research`](http://localhost:3000/legal-research).
+
+- Searches / deep-links Supreme Court, High Courts (eCourts), Indian Kanoon, SCC Online, LiveLaw, Bar & Bench, iPleaders, Cyril Amarchand, Khaitan, AZB, Trilegal, Nishith Desai
+- Frames issues like a senior chambers note (ratio, distinguishing, contrary, procedure, statute, remedies, commercial)
+- Returns case law ordered by **relevancy score**, with matched paragraphs and score breakdown
+- Hybrid engine: curated landmark corpus + optional live portal scan
+- API: `POST /api/legal-research` with `{ "query": "...", "preferLive": true }`
+- Optional env: `INDIANKANOON_API_TOKEN` (see `.env.example`)
+
+Not legal advice — verify official judgments and citator status before filing.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

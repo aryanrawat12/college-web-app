@@ -1,3 +1,27 @@
+/** JSON blob stored in news_tracker_state.payload */
+export type NewsTrackerStatePayload = {
+  config: {
+    topic: string;
+    notifyEmail: string;
+    source: "google-news" | "rss" | "campus";
+    rssUrl?: string;
+    enabled: boolean;
+    updatedAt: string;
+  };
+  seenIds: string[];
+  history: Array<{
+    id: string;
+    title: string;
+    link: string;
+    summary?: string;
+    publishedAt?: string;
+    sourceLabel: string;
+    notifiedAt: string;
+  }>;
+  lastCheckedAt: string | null;
+  lastError: string | null;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -163,6 +187,24 @@ export type Database = {
           image_2_url?: string | null;
           image_3_url?: string | null;
           created_at?: string;
+        };
+        Relationships: [];
+      };
+      news_tracker_state: {
+        Row: {
+          id: number;
+          payload: NewsTrackerStatePayload;
+          updated_at: string;
+        };
+        Insert: {
+          id?: number;
+          payload: NewsTrackerStatePayload;
+          updated_at?: string;
+        };
+        Update: {
+          id?: number;
+          payload?: NewsTrackerStatePayload;
+          updated_at?: string;
         };
         Relationships: [];
       };

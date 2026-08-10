@@ -34,7 +34,7 @@ export async function runNewsCheck(options?: {
     };
   }
 
-  if (!config.notifyEmail || !config.topic) {
+  if (!config.notifyEmail) {
     return {
       ok: false,
       checkedAt,
@@ -42,7 +42,19 @@ export async function runNewsCheck(options?: {
       newCount: 0,
       emailed: [],
       emailConfigured: isEmailConfigured(),
-      message: "Configure a topic and notify email first.",
+      message: "Configure a notify email first.",
+    };
+  }
+
+  if (!config.topic && config.source !== "campus") {
+    return {
+      ok: false,
+      checkedAt,
+      fetched: 0,
+      newCount: 0,
+      emailed: [],
+      emailConfigured: isEmailConfigured(),
+      message: "Configure a topic first.",
     };
   }
 
@@ -72,11 +84,12 @@ export async function runNewsCheck(options?: {
     }
 
     const emailed: NotifiedArticle[] = [];
+    const topicLabel = config.topic || "campus updates";
 
     for (const article of fresh) {
       await sendNewsUpdateEmail({
         to: config.notifyEmail,
-        topic: config.topic,
+        topic: topicLabel,
         article,
       });
       emailed.push({ ...article, notifiedAt: checkedAt });

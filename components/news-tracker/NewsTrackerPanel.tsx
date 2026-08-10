@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import type {
   CheckResult,
   NewsSource,
@@ -8,7 +8,7 @@ import type {
   NotifiedArticle,
 } from "@/lib/news-tracker/types";
 
-type TrackerPayload = {
+export type TrackerPayload = {
   config: NewsWatchConfig;
   lastCheckedAt: string | null;
   lastError: string | null;
@@ -21,51 +21,47 @@ const labelClass = "mb-1.5 block text-sm font-medium text-brand-blue";
 const inputClass =
   "w-full rounded-md border border-brand-blue/20 bg-white px-3 py-2.5 text-sm text-brand-blue placeholder:text-foreground/40 focus:border-brand-yellow focus:outline-none focus:ring-2 focus:ring-brand-yellow/40";
 
-export default function NewsTrackerPanel() {
-  const [loading, setLoading] = useState(true);
+export default function NewsTrackerPanel({
+  initialData,
+}: {
+  initialData: TrackerPayload;
+}) {
   const [saving, setSaving] = useState(false);
   const [checking, setChecking] = useState(false);
-  const [topic, setTopic] = useState("");
-  const [notifyEmail, setNotifyEmail] = useState("");
-  const [source, setSource] = useState<NewsSource>("google-news");
-  const [rssUrl, setRssUrl] = useState("");
-  const [enabled, setEnabled] = useState(true);
-  const [emailConfigured, setEmailConfigured] = useState(false);
-  const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(null);
-  const [lastError, setLastError] = useState<string | null>(null);
-  const [history, setHistory] = useState<NotifiedArticle[]>([]);
-  const [seenCount, setSeenCount] = useState(0);
+  const [topic, setTopic] = useState(initialData.config.topic);
+  const [notifyEmail, setNotifyEmail] = useState(initialData.config.notifyEmail);
+  const [source, setSource] = useState<NewsSource>(initialData.config.source);
+  const [rssUrl, setRssUrl] = useState(initialData.config.rssUrl ?? "");
+  const [enabled, setEnabled] = useState(initialData.config.enabled);
+  const [emailConfigured, setEmailConfigured] = useState(
+    initialData.emailConfigured,
+  );
+  const [lastCheckedAt, setLastCheckedAt] = useState<string | null>(
+    initialData.lastCheckedAt,
+  );
+  const [lastError, setLastError] = useState<string | null>(initialData.lastError);
+  const [history, setHistory] = useState<NotifiedArticle[]>(initialData.history);
+  const [seenCount, setSeenCount] = useState(initialData.seenCount);
   const [status, setStatus] = useState<{
     type: "success" | "error" | "info";
     text: string;
   } | null>(null);
   const [lastCheck, setLastCheck] = useState<CheckResult | null>(null);
 
-  async function load() {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/news-tracker", { cache: "no-store" });
-      const data = (await res.json()) as TrackerPayload;
-      setTopic(data.config.topic);
-      setNotifyEmail(data.config.notifyEmail);
-      setSource(data.config.source);
-      setRssUrl(data.config.rssUrl ?? "");
-      setEnabled(data.config.enabled);
-      setEmailConfigured(data.emailConfigured);
-      setLastCheckedAt(data.lastCheckedAt);
-      setLastError(data.lastError);
-      setHistory(data.history);
-      setSeenCount(data.seenCount);
-    } catch {
-      setStatus({ type: "error", text: "Could not load tracker settings." });
-    } finally {
-      setLoading(false);
-    }
+  async function refreshStatus() {
+    const res = await fetch("/api/news-tracker", { cache: "no-store" });
+    const data = (await res.json()) as TrackerPayload;
+    setTopic(data.config.topic);
+    setNotifyEmail(data.config.notifyEmail);
+    setSource(data.config.source);
+    setRssUrl(data.config.rssUrl ?? "");
+    setEnabled(data.config.enabled);
+    setEmailConfigured(data.emailConfigured);
+    setLastCheckedAt(data.lastCheckedAt);
+    setLastError(data.lastError);
+    setHistory(data.history);
+    setSeenCount(data.seenCount);
   }
-
-  useEffect(() => {
-    void load();
-  }, []);
 
   async function handleSave(event: FormEvent) {
     event.preventDefault();
@@ -119,18 +115,12 @@ export default function NewsTrackerPanel() {
         type: res.ok ? "success" : "error",
         text: data.message,
       });
-      await load();
+      await refreshStatus();
     } catch {
       setStatus({ type: "error", text: "Check failed." });
     } finally {
       setChecking(false);
     }
-  }
-
-  if (loading) {
-    return (
-      <p className="text-sm text-foreground/70">Loading news tracker…</p>
-    );
   }
 
   return (
@@ -158,9 +148,14 @@ export default function NewsTrackerPanel() {
             className={inputClass}
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
-            placeholder="e.g. RGPV Bhopal admissions"
-            required
+            placeholder="e.g. RGPV Bhopal admissions (optional for campus)"
+            required={source !== "campus"}
           />
+          {source === "campus" && (
+            <p className="mt-1 text-xs text-foreground/55">
+              Leave blank to watch all campus announcements and notices.
+            </p>
+          )}
         </div>
 
         <div>

@@ -28,6 +28,9 @@ export default function TopBar() {
           className="flex flex-wrap items-center justify-end gap-4 sm:gap-6"
           aria-label="Top utility navigation"
         >
+          <Link href={routes.newsTracker} className={topLinkClass}>
+            News Tracker
+          </Link>
           <Link href={routes.contactUs} className={topLinkClass}>
             Contact Us
           </Link>

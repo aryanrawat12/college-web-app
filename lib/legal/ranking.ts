@@ -160,7 +160,14 @@ export function rankAuthorities(
 ): RankedAuthority[] {
   return authorities
     .map((a) => scoreAuthority(a, query))
-    .filter((r) => r.relevancyScore >= 12)
+    .filter((r) => {
+      const { keywordMatch, issueMatch, statuteMatch, domainMatch } =
+        r.scoreBreakdown;
+      // Require real topical grip — domain-alone matches (e.g. any "criminal"
+      // authority on a bail query) should not pollute the ranked list.
+      const topical = keywordMatch + issueMatch + statuteMatch;
+      return r.relevancyScore >= 28 && (topical >= 35 || (domainMatch >= 50 && topical >= 20));
+    })
     .sort((a, b) => b.relevancyScore - a.relevancyScore)
     .slice(0, limit);
 }

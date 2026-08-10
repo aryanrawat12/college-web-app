@@ -1,5 +1,3 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -23,6 +21,19 @@ Track a particular news topic and email every new update to a specific inbox.
 5. Optional durable storage on Supabase: run `supabase-news-tracker.sql`.
 
 Sources: Google News by keywords, campus announcements/notices, or a custom RSS URL.
+
+## Apex Counsel (legal research bot)
+
+Ultimate Indian legal research desk at [`/legal-research`](/legal-research).
+
+- Searches / deep-links Supreme Court, High Courts (eCourts), Indian Kanoon, SCC Online, LiveLaw, Bar & Bench, iPleaders, Cyril Amarchand, Khaitan, AZB, Trilegal, Nishith Desai
+- Frames issues like a senior chambers note (ratio, distinguishing, contrary, procedure, statute, remedies, commercial)
+- Returns case law ordered by **relevancy score**, with matched paragraphs and score breakdown
+- Hybrid engine: curated landmark corpus + optional live portal scan
+- API: `POST /api/legal-research` with `{ "query": "...", "preferLive": true }`
+- Optional env: `INDIANKANOON_API_TOKEN` (see `legal.env.example`)
+
+Not legal advice — verify official judgments and citator status before filing.
 
 ## Learn More
 

@@ -29,6 +29,7 @@ const departmentMenu: NavItem[] = [
 const campusMenu: NavItem[] = [
   { label: "Campus Life", href: routes.campusLife },
   { label: "Choupal", href: routes.choupal },
+  { label: "News Tracker", href: routes.newsTracker },
 ];
 
 const navLinkClass =

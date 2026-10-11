@@ -1,3 +1,4 @@
+import { createBrowserClient } from "@supabase/ssr";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/lib/database.types";
 
@@ -11,12 +12,17 @@ function getSupabaseAnonKey(): string | undefined {
   return process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 }
 
-/** Browser client for form submissions (use in Client Components). */
+/** Browser client for form submissions + admin (use in Client Components).
+ * Uses @supabase/ssr so the session lives in cookies the server + middleware
+ * can read (enables real server-side gating of /admin). Singleton — one
+ * GoTrueClient per browser context. */
+let browserClient: SupabaseClientType | null = null;
 export function createBrowserSupabaseClient(): SupabaseClientType | null {
   const url = getSupabaseUrl();
   const key = getSupabaseAnonKey();
   if (!url || !key) return null;
-  return createClient<Database>(url, key);
+  if (!browserClient) browserClient = createBrowserClient<Database>(url, key);
+  return browserClient;
 }
 
 /** Server client for data fetching (use in Server Components). */

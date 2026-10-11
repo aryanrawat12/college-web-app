@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const defaultSlides = [
@@ -9,14 +10,23 @@ const defaultSlides = [
   "/hero/slide-3.jpg",
 ];
 
+type HeroOverlay = {
+  heading: string;
+  subtext?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+};
+
 type HeroCarouselProps = {
   slides?: string[];
   autoPlayMs?: number;
+  overlay?: HeroOverlay;
 };
 
 export default function HeroCarousel({
   slides = defaultSlides,
   autoPlayMs = 5000,
+  overlay,
 }: HeroCarouselProps) {
   const [index, setIndex] = useState(0);
 
@@ -31,6 +41,13 @@ export default function HeroCarousel({
   const goNext = () => goTo(index + 1);
 
   useEffect(() => {
+    // Honor prefers-reduced-motion: don't auto-advance.
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
     const timer = setInterval(() => {
       setIndex((current) => (current + 1) % slides.length);
     }, autoPlayMs);
@@ -42,7 +59,7 @@ export default function HeroCarousel({
       className="relative w-full overflow-hidden bg-brand-blue"
       style={{ height: "60vh", minHeight: "280px", maxHeight: "560px" }}
       aria-roledescription="carousel"
-      aria-label="Department highlights"
+      aria-label="Campus highlights"
     >
       {slides.map((src, i) => (
         <div
@@ -54,15 +71,40 @@ export default function HeroCarousel({
         >
           <Image
             src={src}
-            alt={`Slide ${i + 1}`}
+            alt={`Campus highlight ${i + 1}`}
             fill
             priority={i === 0}
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-brand-blue/25" />
+          <div className="absolute inset-0 bg-brand-blue/45" />
         </div>
       ))}
+
+      {overlay && (
+        <div className="pointer-events-none absolute inset-0 z-[5] flex items-center">
+          <div className="container-page">
+            <div className="pointer-events-auto max-w-2xl text-white">
+              <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl">
+                {overlay.heading}
+              </h1>
+              {overlay.subtext && (
+                <p className="mt-4 max-w-xl text-base text-white/90 sm:text-lg">
+                  {overlay.subtext}
+                </p>
+              )}
+              {overlay.ctaLabel && overlay.ctaHref && (
+                <Link
+                  href={overlay.ctaHref}
+                  className="mt-6 inline-flex rounded-md bg-brand-yellow px-6 py-3 text-sm font-semibold text-brand-blue transition-colors hover:bg-brand-yellow-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  {overlay.ctaLabel}
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <button
         type="button"
@@ -104,7 +146,7 @@ export default function HeroCarousel({
             key={i}
             type="button"
             onClick={() => goTo(i)}
-            className={`h-2.5 rounded-full transition-all ${
+            className={`h-2.5 rounded-full transition-[width,background-color] ${
               i === index
                 ? "w-8 bg-brand-yellow"
                 : "w-2.5 bg-white/70 hover:bg-white"

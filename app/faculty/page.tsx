@@ -4,7 +4,7 @@ import PageHeaderImage from "@/components/shared/PageHeaderImage";
 import { fetchFaculties } from "@/lib/queries";
 
 export const metadata = {
-  title: "Faculty | ABGI",
+  title: "Faculty",
 };
 
 export const revalidate = 0;

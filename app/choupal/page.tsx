@@ -1,7 +1,7 @@
 import ChoupalForm from "@/components/forms/ChoupalForm";
 
 export const metadata = {
-  title: "Choupal | ABGI",
+  title: "Choupal",
   description: "Submit a grievance at Akhil Bharti Group of Institutes",
 };
 

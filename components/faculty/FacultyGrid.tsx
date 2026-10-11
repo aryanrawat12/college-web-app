@@ -31,7 +31,7 @@ function FacultyCard({ member }: { member: FacultyMember }) {
         />
       </div>
       <div className="flex flex-1 flex-col px-4 py-4 text-white">
-        <h3 className="text-lg font-medium italic">{member.name}</h3>
+        <h3 className="font-serif text-lg font-semibold text-brand-blue">{member.name}</h3>
         <p className="mt-1 text-xs leading-snug text-white/85 sm:text-sm">
           {member.designation}
         </p>

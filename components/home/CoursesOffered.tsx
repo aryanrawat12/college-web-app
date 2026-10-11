@@ -27,7 +27,7 @@ export default function CoursesOffered() {
               <p className="text-xs leading-snug text-brand-blue sm:text-sm">
                 {dept.programmes}
               </p>
-              <h3 className="mt-2 text-xl font-semibold italic text-brand-blue group-hover:text-brand-yellow sm:text-2xl">
+              <h3 className="mt-2 font-serif text-xl font-semibold text-brand-blue group-hover:text-brand-yellow sm:text-2xl">
                 {dept.title}
               </h3>
             </div>

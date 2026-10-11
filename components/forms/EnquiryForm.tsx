@@ -49,6 +49,17 @@ export default function EnquiryForm() {
     if (!valid) {
       setShowError(true);
       setSubmitMessage(null);
+      const order: [string, string][] = [
+        ["name", name],
+        ["email", email],
+        ["mobile", mobile],
+        ["state", state],
+        ["city", city],
+        ["department", department],
+        ["programme", programme],
+      ];
+      const firstEmpty = order.find(([, value]) => !isFilled(value));
+      if (firstEmpty) document.getElementById(firstEmpty[0])?.focus();
       return;
     }
 
@@ -103,10 +114,10 @@ export default function EnquiryForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mx-auto w-full max-w-lg rounded-xl bg-brand-blue px-6 py-8 shadow-xl sm:px-8 sm:py-10"
+      className="mx-auto w-full max-w-lg rounded-2xl bg-brand-blue px-6 py-8 shadow-xl sm:px-8 sm:py-10"
       noValidate
     >
-      <h2 className="mb-8 text-center text-2xl font-bold text-white sm:text-3xl">
+      <h2 className="mb-8 text-center font-serif text-2xl font-bold text-white sm:text-3xl">
         Application Form
       </h2>
 
@@ -119,6 +130,7 @@ export default function EnquiryForm() {
             id="name"
             name="name"
             type="text"
+            autoComplete="name"
             value={name}
             onChange={(e) => {
               setName(e.target.value);
@@ -126,7 +138,7 @@ export default function EnquiryForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your full name"
+            placeholder="e.g. Aman Sharma"
             disabled={submitting}
           />
         </div>
@@ -139,6 +151,9 @@ export default function EnquiryForm() {
             id="email"
             name="email"
             type="email"
+            autoComplete="email"
+            inputMode="email"
+            spellCheck={false}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -146,7 +161,7 @@ export default function EnquiryForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your email address"
+            placeholder="e.g. you@example.com"
             disabled={submitting}
           />
         </div>
@@ -159,6 +174,8 @@ export default function EnquiryForm() {
             id="mobile"
             name="mobile"
             type="tel"
+            autoComplete="tel"
+            inputMode="numeric"
             value={mobile}
             onChange={(e) => {
               setMobile(e.target.value);
@@ -166,7 +183,7 @@ export default function EnquiryForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your mobile number"
+            placeholder="e.g. 98765 43210"
             disabled={submitting}
           />
         </div>
@@ -179,6 +196,7 @@ export default function EnquiryForm() {
             id="state"
             name="state"
             type="text"
+            autoComplete="address-level1"
             value={state}
             onChange={(e) => {
               setState(e.target.value);
@@ -186,7 +204,7 @@ export default function EnquiryForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your state"
+            placeholder="e.g. Madhya Pradesh"
             disabled={submitting}
           />
         </div>
@@ -199,6 +217,7 @@ export default function EnquiryForm() {
             id="city"
             name="city"
             type="text"
+            autoComplete="address-level2"
             value={city}
             onChange={(e) => {
               setCity(e.target.value);
@@ -206,7 +225,7 @@ export default function EnquiryForm() {
               setSubmitMessage(null);
             }}
             className={formInputClass}
-            placeholder="Enter your city"
+            placeholder="e.g. Bhopal"
             disabled={submitting}
           />
         </div>
@@ -239,6 +258,7 @@ export default function EnquiryForm() {
               : "text-red-300"
           }`}
           role="status"
+          aria-live="polite"
         >
           {submitMessage.text}
         </p>
@@ -247,7 +267,7 @@ export default function EnquiryForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-6 w-full rounded-md bg-brand-yellow py-3 text-sm font-semibold text-brand-blue transition-colors hover:bg-brand-yellow-hover disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-6 w-full rounded-lg bg-brand-yellow py-3 text-sm font-bold text-white transition-colors hover:bg-brand-yellow-hover disabled:cursor-not-allowed disabled:opacity-70"
       >
         {submitting ? "Submitting…" : "Apply"}
       </button>

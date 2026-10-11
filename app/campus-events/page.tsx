@@ -4,7 +4,7 @@ import PageHeaderImage from "@/components/shared/PageHeaderImage";
 import { fetchEvents } from "@/lib/queries";
 
 export const metadata = {
-  title: "Campus Events | ABGI",
+  title: "Campus Events",
 };
 
 export const revalidate = 0;

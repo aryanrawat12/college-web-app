@@ -8,7 +8,9 @@ type ContentSectionProps = {
 
 export function SectionHeading({ children }: { children: ReactNode }) {
   return (
-    <h2 className="mb-5 text-2xl italic text-brand-blue sm:text-3xl">{children}</h2>
+    <h2 className="mb-5 font-serif text-3xl font-bold tracking-tight text-brand-blue sm:text-[34px]">
+      {children}
+    </h2>
   );
 }
 

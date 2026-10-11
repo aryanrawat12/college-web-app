@@ -1,3 +1,5 @@
+import CourseDetailTable from "@/components/department/CourseDetailTable";
+import DepartmentCTA from "@/components/department/DepartmentCTA";
 import SectionInfrastructure from "@/components/department/SectionInfrastructure";
 import SectionObjectives from "@/components/department/SectionObjectives";
 import SectionOverview from "@/components/department/SectionOverview";
@@ -7,7 +9,7 @@ import HeroCarousel from "@/components/shared/HeroCarousel";
 import TextMarquee from "@/components/shared/TextMarquee";
 
 export const metadata = {
-  title: "Pharmacy | ABGI",
+  title: "Pharmacy",
 };
 
 export default function PharmacyPage() {
@@ -93,7 +95,7 @@ export default function PharmacyPage() {
         </ul>
       </SectionObjectives>
 
-      <SectionProgrammes heading="Progreamme Offered">
+      <SectionProgrammes heading="Programme Offered">
         <p>
           The Faculty offers comprehensive academic programmes designed to ensure
           professional excellence and industry readiness:
@@ -106,6 +108,8 @@ export default function PharmacyPage() {
           </li>
         </ul>
       </SectionProgrammes>
+
+      <CourseDetailTable dept="pharmacy" />
 
       <SectionInfrastructure>
         <DepartmentSubheading>
@@ -138,6 +142,8 @@ export default function PharmacyPage() {
           preparation.
         </p>
       </SectionInfrastructure>
+
+      <DepartmentCTA programmeName="our Pharmacy programmes" />
     </>
   );
 }

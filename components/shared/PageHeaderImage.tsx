@@ -20,7 +20,7 @@ export default function PageHeaderImage({
     >
       <div className="absolute inset-0 bg-brand-blue/55" />
       <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-        <h1 className="max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
+        <h1 className="max-w-3xl font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl">
           {title}
         </h1>
       </div>

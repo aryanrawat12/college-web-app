@@ -97,12 +97,12 @@ async function fetchCampusUpdates(topic: string): Promise<NewsArticle[]> {
     const [a, n] = await Promise.all([
       supabase
         .from("announcements")
-        .select("description, date, created_at")
+        .select("description, created_at")
         .order("created_at", { ascending: false })
         .limit(40),
       supabase
         .from("notices")
-        .select("description, date, created_at")
+        .select("description, created_at")
         .order("created_at", { ascending: false })
         .limit(40),
     ]);
@@ -112,14 +112,14 @@ async function fetchCampusUpdates(topic: string): Promise<NewsArticle[]> {
         ?.filter((row) => row.description)
         .map((row) => ({
           text: row.description!,
-          date: row.date ?? row.created_at,
+          date: row.created_at,
         })) ?? [];
     notices =
       n.data
         ?.filter((row) => row.description)
         .map((row) => ({
           text: row.description!,
-          date: row.date ?? row.created_at,
+          date: row.created_at,
         })) ?? [];
   }
 

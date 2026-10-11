@@ -13,7 +13,7 @@ export type CourseRow = {
   description: string;
   fees: string;
   mode: string;
-  image: string; // topical lorem placeholder (loremflickr); swap for real photo later
+  image: string; // local photo; swap for a real programme photo when available
 };
 
 export type DepartmentContent = {
@@ -39,7 +39,7 @@ export const departmentContent: Record<
           "A foundation diploma covering pharmaceutics, pharmacology and dispensing practice, with hands-on lab and hospital training that qualifies graduates to register and practice as pharmacists.",
         fees: "₹85,000 / year",
         mode: "Full-time, on-campus",
-        image: "https://loremflickr.com/800/520/pharmacy,pharmacist?lock=11",
+        image: "/dept/pharmacy-dept.jpg",
       },
       {
         programme: "Bachelor of Pharmacy (B.Pharm)",
@@ -52,7 +52,7 @@ export const departmentContent: Record<
           "A four-year degree spanning medicinal chemistry, pharmaceutical analysis, pharmacology and industrial pharmacy, combining classroom theory with extensive laboratory and industry exposure.",
         fees: "₹95,000 / year",
         mode: "Full-time, on-campus",
-        image: "https://loremflickr.com/800/520/laboratory,science?lock=12",
+        image: "/dept/pharmacy-dept.jpg",
       },
       {
         programme: "Master of Pharmacy (M.Pharm — Pharmaceutics)",
@@ -65,7 +65,7 @@ export const departmentContent: Record<
           "An advanced specialisation in formulation development and drug delivery, built around a research dissertation, advanced labs and seminars that prepare graduates for R&D and academic careers.",
         fees: "₹1,10,000 / year",
         mode: "Full-time, on-campus",
-        image: "https://loremflickr.com/800/520/laboratory,research?lock=13",
+        image: "/dept/pharmacy-dept.jpg",
       },
     ],
   },
@@ -83,7 +83,7 @@ export const departmentContent: Record<
           "A two-year management degree with specialisations across marketing, finance, HR and operations, blending case studies, live projects and internships to build industry-ready managers and entrepreneurs.",
         fees: "₹90,000 / year",
         mode: "Full-time, on-campus",
-        image: "https://loremflickr.com/800/520/business,office?lock=14",
+        image: "/dept/management-dept.jpg",
       },
     ],
   },
@@ -101,7 +101,7 @@ export const departmentContent: Record<
           "A practice-oriented diploma in child pedagogy, classroom management and foundational subjects, with supervised school internships that prepare candidates to teach at the primary level.",
         fees: "₹45,000 / year",
         mode: "Full-time, on-campus",
-        image: "https://loremflickr.com/800/520/classroom,teaching?lock=15",
+        image: "/dept/education-dept.jpg",
       },
       {
         programme: "Bachelor of Education (B.Ed)",
@@ -114,7 +114,7 @@ export const departmentContent: Record<
           "A professional teacher-training degree covering educational psychology, curriculum design and subject methodology, with extended teaching practice that equips graduates for secondary-school classrooms.",
         fees: "₹55,000 / year",
         mode: "Full-time, on-campus",
-        image: "https://loremflickr.com/800/520/school,classroom?lock=16",
+        image: "/dept/education-dept.jpg",
       },
     ],
   },

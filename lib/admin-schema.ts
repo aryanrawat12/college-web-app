@@ -7,6 +7,8 @@ export type FieldType =
   | "number"
   | "image"
   | "images"
+  | "file" // PDF upload (public URL)
+  | "date"
   | "url";
 
 export type Field = {
@@ -24,6 +26,11 @@ export type TableConfig = {
   orderBy?: { column: string; ascending: boolean };
   listFields: string[]; // columns shown in the list view
   fields: Field[];
+  // Columns that hold private S3 keys (resumes, ID photos) — shown as "Open"
+  // links in the list and as signed URLs in the export.
+  fileKeyFields?: string[];
+  // Adds an "Export to Excel" (CSV) button; columns in this order.
+  exportColumns?: { name: string; label: string }[];
 };
 
 export const adminTables: TableConfig[] = [
@@ -48,8 +55,8 @@ export const adminTables: TableConfig[] = [
       { name: "youtube_url", label: "YouTube URL", type: "url" },
       { name: "facebook_url", label: "Facebook URL", type: "url" },
       { name: "prospectus_url", label: "Prospectus URL", type: "url" },
-      { name: "hero_title", label: "Hero Title" },
-      { name: "hero_subtitle", label: "Hero Subtitle", type: "textarea" },
+      { name: "hero_title", label: "Hero Title (used when Section Headings → hero heading is empty)" },
+      { name: "hero_subtitle", label: "Hero Subtitle (used when Section Headings → hero description is empty)", type: "textarea" },
     ],
   },
   {
@@ -99,7 +106,7 @@ export const adminTables: TableConfig[] = [
     orderBy: { column: "sort", ascending: true },
     listFields: ["label", "sort"],
     fields: [
-      { name: "label", label: "Section" },
+      { name: "label", label: "Section (admin name only)" },
       { name: "sort", label: "Order (lower = higher up)", type: "number" },
     ],
   },
@@ -314,7 +321,130 @@ export const adminTables: TableConfig[] = [
       { name: "sort", label: "Sort", type: "number" },
     ],
   },
+  {
+    table: "policies",
+    label: "Policies (PDF)",
+    group: "Content",
+    orderBy: { column: "sort", ascending: true },
+    listFields: ["title", "category"],
+    fields: [
+      { name: "title", label: "Title" },
+      { name: "category", label: "Category (e.g. Academic, Anti-Ragging, HR)" },
+      { name: "description", label: "Short Description", type: "textarea" },
+      { name: "pdf_url", label: "Policy PDF", type: "file" },
+      { name: "sort", label: "Sort", type: "number" },
+    ],
+  },
+  {
+    table: "jobs",
+    label: "Careers — Job Openings",
+    group: "Content",
+    orderBy: { column: "sort", ascending: true },
+    listFields: ["title", "department", "last_date"],
+    fields: [
+      { name: "title", label: "Job Title" },
+      { name: "department", label: "Department / Institute" },
+      { name: "location", label: "Location" },
+      { name: "employment_type", label: "Type (Full-time / Part-time / Contract)" },
+      { name: "qualification", label: "Qualification Required" },
+      { name: "experience", label: "Experience Required" },
+      { name: "description", label: "Job Description", type: "textarea" },
+      { name: "last_date", label: "Last Date to Apply (hidden after this date)", type: "date" },
+      { name: "sort", label: "Sort", type: "number" },
+    ],
+  },
   // ── Submissions (read-only) ──
+  {
+    table: "job_applications",
+    label: "Job Applications",
+    group: "Submissions",
+    readOnly: true,
+    orderBy: { column: "created_at", ascending: false },
+    listFields: ["name", "job_title", "mobile", "resume_key", "created_at"],
+    fields: [],
+    fileKeyFields: ["resume_key"],
+    exportColumns: [
+      { name: "job_title", label: "Applied For" },
+      { name: "name", label: "Name" },
+      { name: "email", label: "Email" },
+      { name: "mobile", label: "Mobile" },
+      { name: "qualification", label: "Qualification" },
+      { name: "experience", label: "Experience" },
+      { name: "message", label: "Message" },
+      { name: "resume_key", label: "Resume (link valid 7 days)" },
+      { name: "created_at", label: "Submitted On" },
+    ],
+  },
+  {
+    table: "id_card_submissions",
+    label: "ID Card Details",
+    group: "Submissions",
+    readOnly: true,
+    orderBy: { column: "created_at", ascending: false },
+    listFields: ["enrollment_no", "name", "course", "batch", "photo_key", "created_at"],
+    fields: [],
+    fileKeyFields: ["photo_key"],
+    // Same order as the printed card (front, then back).
+    exportColumns: [
+      { name: "enrollment_no", label: "Enroll. No." },
+      { name: "batch", label: "Batch" },
+      { name: "name", label: "Name" },
+      { name: "course", label: "Course" },
+      { name: "dob", label: "Date of Birth" },
+      { name: "contact", label: "Contact No." },
+      { name: "father_name", label: "Father's Name" },
+      { name: "mother_name", label: "Mother's Name" },
+      { name: "local_address", label: "Local Address" },
+      { name: "photo_key", label: "Photo (link valid 7 days)" },
+      { name: "created_at", label: "Submitted On" },
+    ],
+  },
+  {
+    table: "student_documents",
+    label: "Student Documents",
+    group: "Submissions",
+    readOnly: true,
+    orderBy: { column: "created_at", ascending: false },
+    listFields: ["name", "course", "mobile", "doc_photo", "doc_10th", "doc_12th", "doc_aadhaar", "created_at"],
+    fields: [],
+    fileKeyFields: [
+      "doc_10th",
+      "doc_12th",
+      "doc_tc",
+      "doc_migration",
+      "doc_gap",
+      "doc_income",
+      "doc_domicile",
+      "doc_caste",
+      "doc_aadhaar",
+      "doc_samagra",
+      "doc_mp_taas",
+      "doc_otr",
+      "doc_photo",
+    ],
+    // Document links in the export are valid for 7 days.
+    exportColumns: [
+      { name: "name", label: "Name" },
+      { name: "enrollment_no", label: "Enroll. No." },
+      { name: "course", label: "Course" },
+      { name: "mobile", label: "Contact No." },
+      { name: "email", label: "Email" },
+      { name: "doc_10th", label: "10th Marksheet" },
+      { name: "doc_12th", label: "12th Marksheet" },
+      { name: "doc_tc", label: "TC" },
+      { name: "doc_migration", label: "Migration" },
+      { name: "doc_gap", label: "Gap Certificate" },
+      { name: "doc_income", label: "Income" },
+      { name: "doc_domicile", label: "Domicile" },
+      { name: "doc_caste", label: "Caste" },
+      { name: "doc_aadhaar", label: "Aadhaar" },
+      { name: "doc_samagra", label: "Samagra" },
+      { name: "doc_mp_taas", label: "MP TAAS" },
+      { name: "doc_otr", label: "OTR" },
+      { name: "doc_photo", label: "Photo" },
+      { name: "created_at", label: "Submitted On" },
+    ],
+  },
   {
     table: "enquiries",
     label: "Enquiries",

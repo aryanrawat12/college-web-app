@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Lora } from "next/font/google";
+import { connection } from "next/server";
 import BottomBar from "@/components/layout/BottomBar";
 import CopyRights from "@/components/layout/CopyRights";
 import NavBar from "@/components/layout/NavBar";
@@ -34,6 +35,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Render every page per request: the header/footer contact details are
+  // admin-editable (site_settings), and a statically prebuilt page would keep
+  // showing the values from build time.
+  await connection();
   const contact = await fetchContactInfo();
   return (
     <html

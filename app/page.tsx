@@ -153,8 +153,8 @@ export default async function HomePage() {
   return (
     <>
       <Hero
-        title={settings?.heroTitle || undefined}
-        subtitle={settings?.heroSubtitle || undefined}
+        title={sc.hero?.heading || settings?.heroTitle || undefined}
+        subtitle={sc.hero?.description || settings?.heroSubtitle || undefined}
         content={sc.hero}
       />
       {order.map((key) => (

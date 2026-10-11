@@ -91,34 +91,24 @@ function Dashboard({ supabase }: { supabase: any }) {
   );
 }
 
-async function uploadImage(
+async function uploadFile(
   supabase: any,
   file: File,
   folder: string,
 ): Promise<string> {
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
+  const body = new FormData();
+  body.append("file", file);
+  body.append("folder", folder);
   const res = await fetch("/api/upload", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      filename: file.name,
-      contentType: file.type,
-      folder,
-    }),
+    headers: { Authorization: `Bearer ${token}` },
+    body,
   });
-  if (!res.ok) throw new Error("Upload authorization failed");
-  const { uploadUrl, publicUrl } = await res.json();
-  const put = await fetch(uploadUrl, {
-    method: "PUT",
-    headers: { "Content-Type": file.type },
-    body: file,
-  });
-  if (!put.ok) throw new Error("Upload failed");
-  return publicUrl;
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error ?? "Upload failed");
+  return json.publicUrl;
 }
 
 function TableManager({
@@ -231,6 +221,14 @@ function TableManager({
         <h2 className="font-serif text-2xl font-bold text-brand-blue">
           {config.label}
         </h2>
+        {config.exportColumns && !editing && (
+          <a
+            href={`/api/admin/export?table=${config.table}`}
+            className="rounded-lg bg-brand-blue px-4 py-2 text-sm font-bold text-white hover:bg-brand-blue-dark"
+          >
+            Export to Excel
+          </a>
+        )}
         {!config.readOnly && !editing && (
           <button
             onClick={() => setEditing({})}
@@ -324,7 +322,18 @@ function TableManager({
                   )}
                   {config.listFields.map((f) => (
                     <td key={f} className="max-w-[260px] truncate px-4 py-2.5 text-foreground/80">
-                      {String(r[f] ?? "")}
+                      {config.fileKeyFields?.includes(f) && r[f] ? (
+                        <a
+                          href={`/api/admin/file?key=${encodeURIComponent(r[f])}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-brand-blue hover:underline"
+                        >
+                          Open
+                        </a>
+                      ) : (
+                        String(r[f] ?? "")
+                      )}
                     </td>
                   ))}
                   <td className="px-4 py-2.5 text-right whitespace-nowrap">
@@ -403,7 +412,7 @@ function RowForm({
   async function onFile(field: Field, file: File) {
     setUploading(field.name);
     try {
-      const url = await uploadImage(supabase, file, config.table);
+      const url = await uploadFile(supabase, file, config.table);
       set(field.name, url);
     } catch (e: any) {
       alert(e.message);
@@ -418,7 +427,7 @@ function RowForm({
       : [];
     try {
       for (const file of Array.from(files)) {
-        const url = await uploadImage(supabase, file, config.table);
+        const url = await uploadFile(supabase, file, config.table);
         current.push(url);
         set(field.name, [...current]);
       }
@@ -443,6 +452,7 @@ function RowForm({
     config.fields.forEach((f) => {
       if (f.type === "number" && clean[f.name] !== undefined && clean[f.name] !== "")
         clean[f.name] = Number(clean[f.name]);
+      if (f.type === "date" && clean[f.name] === "") clean[f.name] = null;
     });
     await onSave(clean);
     setBusy(false);
@@ -510,6 +520,47 @@ function RowForm({
                 className="w-full rounded-lg border border-border-warm-2 px-3 py-2 text-xs focus:border-brand-blue focus:outline-none"
               />
             </div>
+          ) : f.type === "file" ? (
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-4">
+                <label className="cursor-pointer">
+                  <span className="inline-flex items-center gap-2 rounded-lg bg-brand-blue px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-brand-blue-dark">
+                    <svg viewBox="0 0 24 24" fill="none" className="h-4 w-4">
+                      <path d="M12 16V4m0 0L8 8m4-4l4 4M4 20h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {uploading === f.name
+                      ? "Uploading…"
+                      : values[f.name]
+                        ? "Replace PDF"
+                        : "Upload PDF"}
+                  </span>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    disabled={uploading === f.name}
+                    onChange={(e) => e.target.files?.[0] && onFile(f, e.target.files[0])}
+                    className="hidden"
+                  />
+                </label>
+                {values[f.name] && (
+                  <a
+                    href={values[f.name]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-brand-blue hover:underline"
+                  >
+                    View current PDF
+                  </a>
+                )}
+              </div>
+              <input
+                type="text"
+                value={values[f.name] ?? ""}
+                onChange={(e) => set(f.name, e.target.value)}
+                placeholder="…or paste a PDF URL"
+                className="w-full rounded-lg border border-border-warm-2 px-3 py-2 text-xs focus:border-brand-blue focus:outline-none"
+              />
+            </div>
           ) : f.type === "images" ? (
             <div className="space-y-3">
               {Array.isArray(values[f.name]) && values[f.name].length > 0 && (
@@ -556,7 +607,7 @@ function RowForm({
             </div>
           ) : (
             <input
-              type={f.type === "number" ? "number" : "text"}
+              type={f.type === "number" || f.type === "date" ? f.type : "text"}
               value={values[f.name] ?? ""}
               onChange={(e) => set(f.name, e.target.value)}
               className="w-full rounded-lg border border-border-warm-2 px-3 py-2 text-sm focus:border-brand-blue focus:outline-none"

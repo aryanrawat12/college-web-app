@@ -61,8 +61,9 @@ Tables (public read; writes restricted to authenticated admin via RLS):
 `programmes`, `accreditations`, `placement_stats`, `placement_record`,
 `recruiters`, `testimonials`, `alumni`, `faqs`, `stats`, `leadership`,
 `faculties`, `events`, `announcements`, `notices`, `site_settings`,
-`payment_links`. Submissions (`enquiries`, `applications`, `grievances`) are
-public-insert / admin-read.
+`payment_links`, `jobs`, `policies`. Submissions (`enquiries`, `applications`,
+`grievances`, `job_applications`, `id_card_submissions`) are public-insert /
+admin-read.
 
 Schema lives in `supabase/migrations/`. Types in `lib/database.types.ts`.
 
@@ -70,8 +71,15 @@ Schema lives in `supabase/migrations/`. Types in `lib/database.types.ts`.
 
 `/admin` — Supabase email/password login, then config-driven CRUD for every
 content table + a read-only submissions viewer. Image fields upload straight to
-S3 (presigned `POST /api/upload`, admin-auth gated). The editable-table config
-is in `lib/admin-schema.ts`.
+S3 (presigned `POST /api/upload`, admin-auth gated); PDF fields (policies) use
+the same route. The editable-table config is in `lib/admin-schema.ts`.
+
+**Private uploads.** Job-application resumes and ID-card photos are uploaded by
+visitors through `POST /api/public-upload` (type/size checked server-side) and
+stored under the `private/` prefix in S3. Admins open them via
+`/api/admin/file?key=…` (presigned, 5 min), and tables with `exportColumns`
+get an **Export to Excel** button (`/api/admin/export`, CSV with 7-day photo /
+resume links). **The bucket policy must not allow public read on `private/*`.**
 
 **Setup:** create an admin user in Supabase Dashboard → Authentication → Users,
 and **disable public sign-ups** (Auth → Sign In / Providers) so only that user

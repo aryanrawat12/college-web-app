@@ -22,15 +22,29 @@ export default function Hero({
       id="hero"
       className="relative isolate flex min-h-[88vh] flex-col overflow-hidden"
     >
-      {/* Full-bleed campus image — the star of the hero */}
+      {/* Full-bleed aerial campus video over its poster frame. The poster
+          paints first (and is all reduced-motion users see). */}
       <Image
-        src="/hero/slide-1.jpg"
-        alt="Akhil Bharti Group of Institutes campus"
+        src="/hero/campus-aerial-poster.jpg"
+        alt="Aerial view of the Akhil Bharti Group of Institutes campus"
         fill
         priority
         sizes="100vw"
         className="-z-10 object-cover"
       />
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        poster="/hero/campus-aerial-poster.jpg"
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 h-full w-full object-cover motion-reduce:hidden"
+      >
+        <source src="/hero/campus-aerial-720.mp4" type="video/mp4" media="(max-width: 768px)" />
+        <source src="/hero/campus-aerial.mp4" type="video/mp4" />
+      </video>
       {/* Light, left-weighted overlays so the photo stays visible */}
       <div className="absolute inset-0 -z-10 bg-brand-blue-dark/30" />
       <div className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-blue-dark/85 via-brand-blue-dark/35 to-transparent" />

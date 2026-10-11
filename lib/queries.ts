@@ -506,3 +506,65 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
     heroSubtitle: data.hero_subtitle ?? "",
   };
 }
+
+export type Job = {
+  id: number;
+  title: string;
+  department: string | null;
+  location: string | null;
+  employmentType: string | null;
+  qualification: string | null;
+  experience: string | null;
+  description: string | null;
+  lastDate: string | null;
+};
+
+// Open job posts. No static fallback — an empty list renders the
+// "no openings" state. Posts past their last date are hidden.
+export async function fetchJobs(): Promise<Job[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return [];
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from("jobs")
+    .select("*")
+    .or(`last_date.is.null,last_date.gte.${today}`)
+    .order("sort", { ascending: true });
+  if (error || !data) return [];
+  return data.map((r) => ({
+    id: r.id,
+    title: r.title,
+    department: r.department,
+    location: r.location,
+    employmentType: r.employment_type,
+    qualification: r.qualification,
+    experience: r.experience,
+    description: r.description,
+    lastDate: r.last_date,
+  }));
+}
+
+export type Policy = {
+  id: number;
+  title: string;
+  category: string;
+  description: string | null;
+  pdfUrl: string;
+};
+
+export async function fetchPolicies(): Promise<Policy[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("policies")
+    .select("id, title, category, description, pdf_url")
+    .order("sort", { ascending: true });
+  if (error || !data) return [];
+  return data.map((r) => ({
+    id: r.id,
+    title: r.title,
+    category: r.category?.trim() || "General",
+    description: r.description,
+    pdfUrl: r.pdf_url,
+  }));
+}

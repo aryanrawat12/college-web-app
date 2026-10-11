@@ -8,6 +8,7 @@ const quickLinks = [
   { label: "Placements", href: routes.placements },
   { label: "Campus Events", href: routes.campusLife },
   { label: "Gallery", href: routes.gallery },
+  { label: "Careers", href: routes.careers },
   { label: "Contact Us", href: routes.contactUs },
   { label: "Choupal (Grievance)", href: routes.choupal },
 ];

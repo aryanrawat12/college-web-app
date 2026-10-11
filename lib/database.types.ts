@@ -339,6 +339,143 @@ export type Database = {
         }
         Relationships: []
       }
+      id_card_submissions: {
+        Row: {
+          batch: string
+          contact: string
+          course: string
+          created_at: string
+          dob: string
+          enrollment_no: string
+          father_name: string
+          id: number
+          local_address: string
+          mother_name: string
+          name: string
+          photo_key: string
+        }
+        Insert: {
+          batch: string
+          contact: string
+          course: string
+          created_at?: string
+          dob: string
+          enrollment_no: string
+          father_name: string
+          id?: never
+          local_address: string
+          mother_name: string
+          name: string
+          photo_key: string
+        }
+        Update: {
+          batch?: string
+          contact?: string
+          course?: string
+          created_at?: string
+          dob?: string
+          enrollment_no?: string
+          father_name?: string
+          id?: never
+          local_address?: string
+          mother_name?: string
+          name?: string
+          photo_key?: string
+        }
+        Relationships: []
+      }
+      job_applications: {
+        Row: {
+          created_at: string
+          email: string
+          experience: string | null
+          id: number
+          job_id: number | null
+          job_title: string | null
+          message: string | null
+          mobile: string
+          name: string
+          qualification: string | null
+          resume_key: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          experience?: string | null
+          id?: never
+          job_id?: number | null
+          job_title?: string | null
+          message?: string | null
+          mobile: string
+          name: string
+          qualification?: string | null
+          resume_key: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          experience?: string | null
+          id?: never
+          job_id?: number | null
+          job_title?: string | null
+          message?: string | null
+          mobile?: string
+          name?: string
+          qualification?: string | null
+          resume_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          created_at: string
+          department: string | null
+          description: string | null
+          employment_type: string | null
+          experience: string | null
+          id: number
+          last_date: string | null
+          location: string | null
+          qualification: string | null
+          sort: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          experience?: string | null
+          id?: never
+          last_date?: string | null
+          location?: string | null
+          qualification?: string | null
+          sort?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          description?: string | null
+          employment_type?: string | null
+          experience?: string | null
+          id?: never
+          last_date?: string | null
+          location?: string | null
+          qualification?: string | null
+          sort?: number
+          title?: string
+        }
+        Relationships: []
+      }
       leadership: {
         Row: { id: number; image_url: string | null; message: string | null; name: string | null; role: string | null }
         Insert: { id?: number; image_url?: string | null; message?: string | null; name?: string | null; role?: string | null }
@@ -355,6 +492,12 @@ export type Database = {
         Row: { description: string | null; id: number; institute: string; sort: number; url: string }
         Insert: { description?: string | null; id?: never; institute: string; sort?: number; url: string }
         Update: { description?: string | null; id?: never; institute?: string; sort?: number; url?: string }
+        Relationships: []
+      }
+      policies: {
+        Row: { category: string | null; created_at: string; description: string | null; id: number; pdf_url: string; sort: number; title: string }
+        Insert: { category?: string | null; created_at?: string; description?: string | null; id?: never; pdf_url: string; sort?: number; title: string }
+        Update: { category?: string | null; created_at?: string; description?: string | null; id?: never; pdf_url?: string; sort?: number; title?: string }
         Relationships: []
       }
       placement_record: {
@@ -526,6 +669,75 @@ export type Database = {
         Row: { id: number; label: string; sort: number; value: string }
         Insert: { id?: never; label: string; sort?: number; value: string }
         Update: { id?: never; label?: string; sort?: number; value?: string }
+        Relationships: []
+      }
+      student_documents: {
+        Row: {
+          course: string
+          created_at: string
+          doc_10th: string
+          doc_12th: string
+          doc_aadhaar: string
+          doc_caste: string | null
+          doc_domicile: string
+          doc_gap: string | null
+          doc_income: string
+          doc_migration: string | null
+          doc_mp_taas: string | null
+          doc_otr: string | null
+          doc_photo: string
+          doc_samagra: string
+          doc_tc: string
+          email: string
+          enrollment_no: string | null
+          id: number
+          mobile: string
+          name: string
+        }
+        Insert: {
+          course: string
+          created_at?: string
+          doc_10th: string
+          doc_12th: string
+          doc_aadhaar: string
+          doc_caste?: string | null
+          doc_domicile: string
+          doc_gap?: string | null
+          doc_income: string
+          doc_migration?: string | null
+          doc_mp_taas?: string | null
+          doc_otr?: string | null
+          doc_photo: string
+          doc_samagra: string
+          doc_tc: string
+          email: string
+          enrollment_no?: string | null
+          id?: never
+          mobile: string
+          name: string
+        }
+        Update: {
+          course?: string
+          created_at?: string
+          doc_10th?: string
+          doc_12th?: string
+          doc_aadhaar?: string
+          doc_caste?: string | null
+          doc_domicile?: string
+          doc_gap?: string | null
+          doc_income?: string
+          doc_migration?: string | null
+          doc_mp_taas?: string | null
+          doc_otr?: string | null
+          doc_photo?: string
+          doc_samagra?: string
+          doc_tc?: string
+          email?: string
+          enrollment_no?: string | null
+          id?: never
+          mobile?: string
+          name?: string
+        }
         Relationships: []
       }
       testimonials: {

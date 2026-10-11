@@ -19,7 +19,7 @@ No test suite exists.
 
 ## Architecture
 
-Marketing/brochure site for a college (ABGI). Every route is a static `app/<name>/page.tsx` Server Component — no dynamic routes, no route handlers, no auth, no middleware. Content is served from Supabase with a **static fallback**, so the site renders fully even with no database configured.
+Marketing/brochure site for a college (ABGI). Public routes are static `app/<name>/page.tsx` Server Components — no dynamic routes. Content is served from Supabase with a **static fallback**, so the site renders fully even with no database configured. The one non-public area is `/admin` (auth-gated CMS) plus a single `/api/upload` route handler and a `middleware.ts` that guards `/admin`.
 
 ### Data layer — Supabase-with-fallback (the core pattern)
 
@@ -34,7 +34,14 @@ When adding a new DB-backed field: add the table read to `queries.ts` with a fal
 ### Reads vs writes
 
 - **Reads:** Server Components call `lib/queries.ts` (async, `Promise.all` at the top of the page). Pages set `export const revalidate = 0` (always fresh).
-- **Writes:** form Client Components in `components/forms/` use `createBrowserSupabaseClient()` to INSERT directly (enquiry, grievance/choupal). These are the only `"use client"` data paths.
+- **Public writes:** form Client Components in `components/forms/` use `createBrowserSupabaseClient()` to INSERT directly (enquiry, grievance/choupal).
+- **Admin writes:** `components/admin/AdminApp.tsx` (a generic CRUD dashboard) uses the browser client to `insert`/`update`/`upsert`/`delete` any table, gated behind Supabase Auth.
+
+### Admin CMS + auth
+
+- `/admin` is a **generic, schema-driven CRUD** UI. `lib/admin-schema.ts` (`adminTables`) is the single source of truth: each entry maps a DB table to its editable `fields` and list columns, grouped into Site/Academics/People/Placements/Content/Submissions. `single: true` = one-row settings table (id=1); `readOnly: true` = view-only submissions. **To expose a new table in the admin, add a `TableConfig` here** — `AdminApp.tsx` renders it generically, no per-table code.
+- **Auth:** Supabase Auth (email/password). `lib/supabase-auth.ts` holds `getServerAuthClient()` (cookie-aware SSR client) and `updateSession()` (middleware). `middleware.ts` runs on `/admin/:path*`, refreshes the session, and redirects unauthenticated users to `/admin/login`. `app/admin/page.tsx` re-checks `getUser()` server-side (defence in depth). Always use `getUser()`, never `getSession()` — it validates the token with Supabase.
+- **Image uploads (S3, not Supabase Storage):** `image`/`images` fields in the admin upload via `POST /api/upload`, which verifies the caller's admin Bearer token then returns a short-lived (60s) **presigned PUT URL**; the browser uploads straight to S3. `lib/s3.ts` holds the server-only S3 client and `publicUrlFor(key)`. AWS creds are runtime env (`AWS_*`, never `NEXT_PUBLIC_`); on EC2 prefer an IAM instance role and omit the key vars.
 
 ### UI structure
 
@@ -49,5 +56,6 @@ No `tailwind.config`. Theme is defined in `app/globals.css` via `@import "tailwi
 ### Misc
 
 - Path alias `@/*` → repo root. TS `strict`.
+- **Env:** see `.env.example`. `NEXT_PUBLIC_*` (Supabase URL/anon key) bake in at build time; `AWS_*` are read at runtime — on EC2 set them before `npm run build`.
 - `lib/site.ts` reads external-portal URLs from env (`NEXT_PUBLIC_LOGIN_URL`, `NEXT_PUBLIC_PAYMENT_URL`, `NEXT_PUBLIC_LINKEDIN_URL`), falling back to `example.com` placeholders when unset.
-- `next.config.ts` whitelists `**.supabase.co/storage/v1/object/public/**` for `next/image` (DB-hosted images).
+- `next.config.ts` whitelists `**.supabase.co/storage/v1/object/public/**` for `next/image`. Note: uploads now go to **S3**, whose hostname is *not* in `remotePatterns` — S3-hosted images must render via plain `<img>` (or the S3 host needs adding here before `next/image` will load them).

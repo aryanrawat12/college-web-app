@@ -1,6 +1,10 @@
 import { siteConfig } from "@/lib/site";
 
-export default function ContactMap() {
+export default function ContactMap({
+  query = siteConfig.mapsQuery,
+}: {
+  query?: string;
+}) {
   return (
     <section
       className="bg-cream-2"
@@ -37,7 +41,7 @@ export default function ContactMap() {
 
           <iframe
             title="ABGI location — Akhil Bharti College, Bhopal"
-            src={`https://maps.google.com/maps?q=${encodeURIComponent(siteConfig.mapsQuery)}&hl=en&z=16&output=embed`}
+            src={`https://maps.google.com/maps?q=${encodeURIComponent(query || siteConfig.mapsQuery)}&hl=en&z=16&output=embed`}
             className="h-[360px] w-full border-0 sm:h-[420px]"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

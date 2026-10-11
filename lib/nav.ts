@@ -21,6 +21,7 @@ export const aboutMenu: NavGroup = {
     { label: "Alumni", href: routes.alumni },
     { label: "FAQs", href: routes.faq },
     { label: "Mandatory Disclosures", href: routes.mandatoryDisclosures },
+    { label: "Careers", href: routes.careers },
   ],
 };
 
@@ -55,8 +56,23 @@ export const mediaMenu: NavGroup = {
   ],
 };
 
+export const studentsMenu: NavGroup = {
+  label: "Students",
+  items: [
+    { label: "Documents (Checklist & Upload)", href: routes.documentsRequired },
+    { label: "ID Card Details Form", href: routes.idCard },
+    { label: "Policies", href: routes.policies },
+  ],
+};
+
 // Top-level items with no dropdown.
 export const placementsLink: NavLink = { label: "Placements", href: routes.placements };
 export const contactLink: NavLink = { label: "Contact", href: routes.contactUs };
 
-export const menuGroups: NavGroup[] = [aboutMenu, academicsMenu, admissionsMenu, mediaMenu];
+export const menuGroups: NavGroup[] = [
+  aboutMenu,
+  academicsMenu,
+  admissionsMenu,
+  studentsMenu,
+  mediaMenu,
+];

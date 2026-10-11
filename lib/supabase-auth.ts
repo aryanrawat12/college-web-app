@@ -71,3 +71,14 @@ export async function updateSession(request: NextRequest) {
 
   return response;
 }
+
+/** Cookie-auth client for admin-only route handlers. Returns null unless a
+ * logged-in admin is making the request (validated with getUser). */
+export async function getAdminClient() {
+  const supabase = await getServerAuthClient();
+  if (!supabase) return null;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user ? supabase : null;
+}

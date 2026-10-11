@@ -14,6 +14,7 @@ import {
   contactLink,
   mediaMenu,
   placementsLink,
+  studentsMenu,
   type NavGroup,
 } from "@/lib/nav";
 import { routes, siteConfig } from "@/lib/site";
@@ -212,6 +213,7 @@ export default function NavBar() {
           <NavDropdown {...aboutMenu} />
           <AcademicsMega />
           <NavDropdown {...admissionsMenu} />
+          <NavDropdown {...studentsMenu} />
           <Link
             href={placementsLink.href}
             className={directLinkClass(placementsLink.href)}

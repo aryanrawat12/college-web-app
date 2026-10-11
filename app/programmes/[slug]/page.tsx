@@ -110,7 +110,7 @@ export default async function ProgrammePage({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={program.image}
-            alt={`${program.name} (placeholder)`}
+            alt={`${program.name}`}
             className="absolute inset-0 h-full w-full object-cover"
           />
         </div>

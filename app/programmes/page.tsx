@@ -34,7 +34,7 @@ export default async function ProgrammesPage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={p.image}
-                  alt={`${p.name} (placeholder)`}
+                  alt={`${p.name}`}
                   className="absolute inset-0 h-full w-full object-cover"
                   loading="lazy"
                 />

@@ -63,4 +63,9 @@ export const routes = {
   terms: "/terms",
   programmes: "/programmes",
   payment: "/payment",
+  careers: "/careers",
+  careersApply: "/careers/apply",
+  idCard: "/id-card",
+  policies: "/policies",
+  documentsRequired: "/documents-required",
 } as const;

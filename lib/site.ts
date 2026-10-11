@@ -68,4 +68,5 @@ export const routes = {
   idCard: "/id-card",
   policies: "/policies",
   documentsRequired: "/documents-required",
+  newsTracker: "/news-tracker",
 } as const;

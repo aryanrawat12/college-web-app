@@ -1,6 +1,6 @@
 import { tickerNotices } from "@/lib/home-data";
 import type { ContactInfo } from "@/lib/queries";
-import { siteConfig } from "@/lib/site";
+import { routes, siteConfig } from "@/lib/site";
 
 const utilLinkClass =
   "text-white/85 transition-colors hover:text-white focus-visible:text-white";
@@ -46,6 +46,10 @@ export default function TopBar({ contact }: { contact: ContactInfo }) {
           className="hidden shrink-0 items-center gap-4 md:flex"
           aria-label="Top utility navigation"
         >
+          <a href={routes.newsTracker} className={utilLinkClass}>
+            News Tracker
+          </a>
+          <span className="text-white/25">|</span>
           <a
             href={siteConfig.studentLoginUrl}
             target="_blank"

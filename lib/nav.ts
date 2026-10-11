@@ -53,6 +53,7 @@ export const mediaMenu: NavGroup = {
     { label: "Gallery", href: routes.gallery },
     { label: "Notices & Announcements", href: routes.notices },
     { label: "Choupal (Grievance)", href: routes.choupal },
+    { label: "News Tracker", href: routes.newsTracker },
   ],
 };
 

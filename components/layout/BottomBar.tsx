@@ -11,6 +11,11 @@ const quickLinks = [
   { label: "Careers", href: routes.careers },
   { label: "Contact Us", href: routes.contactUs },
   { label: "Choupal (Grievance)", href: routes.choupal },
+  {
+    label: "Portal Login",
+    href: siteConfig.studentLoginUrl,
+    external: /^https?:\/\//.test(siteConfig.studentLoginUrl),
+  },
 ];
 
 export default function BottomBar({ contact }: { contact: ContactInfo }) {
@@ -123,6 +128,8 @@ export default function BottomBar({ contact }: { contact: ContactInfo }) {
               <li key={l.href}>
                 <Link
                   href={l.href}
+                  target={l.external ? "_blank" : undefined}
+                  rel={l.external ? "noopener noreferrer" : undefined}
                   className="block py-1.5 text-sm transition-colors hover:text-white"
                 >
                   {l.label}

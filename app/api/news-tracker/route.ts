@@ -2,12 +2,17 @@ import { NextResponse } from "next/server";
 import { getState, updateConfig } from "@/lib/news-tracker/store";
 import type { NewsSource } from "@/lib/news-tracker/types";
 import { isEmailConfigured } from "@/lib/news-tracker/email";
+import { getAdminClient } from "@/lib/supabase-auth";
 
 export const dynamic = "force-dynamic";
 
 const SOURCES: NewsSource[] = ["google-news", "rss", "campus"];
 
+const unauthorized = () =>
+  NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
 export async function GET() {
+  if (!(await getAdminClient())) return unauthorized();
   const state = await getState();
   return NextResponse.json({
     config: state.config,
@@ -20,6 +25,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!(await getAdminClient())) return unauthorized();
   const body = (await request.json()) as {
     topic?: string;
     notifyEmail?: string;

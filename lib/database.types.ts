@@ -524,6 +524,24 @@ export type Database = {
         Update: { created_at?: string; description?: string; id?: never; sort?: number }
         Relationships: []
       }
+      anti_ragging_settings: {
+        Row: { appointment_date: string | null; appointment_order: string | null; college_contact: string | null; helpline_email: string | null; helpline_phone: string | null; id: number; intro: string | null; pdf_label: string | null; pdf_url: string | null; punishments: string | null; undertaking: string | null; what_is_ragging: string | null }
+        Insert: { appointment_date?: string | null; appointment_order?: string | null; college_contact?: string | null; helpline_email?: string | null; helpline_phone?: string | null; id?: number; intro?: string | null; pdf_label?: string | null; pdf_url?: string | null; punishments?: string | null; undertaking?: string | null; what_is_ragging?: string | null }
+        Update: { appointment_date?: string | null; appointment_order?: string | null; college_contact?: string | null; helpline_email?: string | null; helpline_phone?: string | null; id?: number; intro?: string | null; pdf_label?: string | null; pdf_url?: string | null; punishments?: string | null; undertaking?: string | null; what_is_ragging?: string | null }
+        Relationships: []
+      }
+      anti_ragging_members: {
+        Row: { department: string | null; email: string | null; id: number; mobile: string | null; name: string; role: string | null; sort: number }
+        Insert: { department?: string | null; email?: string | null; id?: never; mobile?: string | null; name: string; role?: string | null; sort?: number }
+        Update: { department?: string | null; email?: string | null; id?: never; mobile?: string | null; name?: string; role?: string | null; sort?: number }
+        Relationships: []
+      }
+      anti_ragging_documents: {
+        Row: { id: number; pdf_url: string; sort: number; title: string; year: string | null }
+        Insert: { id?: never; pdf_url: string; sort?: number; title: string; year?: string | null }
+        Update: { id?: never; pdf_url?: string; sort?: number; title?: string; year?: string | null }
+        Relationships: []
+      }
       nav_links: {
         Row: { href: string; id: number; label: string; menu: string | null; sort: number }
         Insert: { href: string; id?: never; label: string; menu?: string | null; sort?: number }

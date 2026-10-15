@@ -7,6 +7,7 @@ import NavBar from "@/components/layout/NavBar";
 import TopBar from "@/components/layout/TopBar";
 import FloatingActions from "@/components/shared/FloatingActions";
 import { fetchContactInfo, fetchNavMenu, fetchTheme } from "@/lib/queries";
+import { headerNav } from "@/lib/nav";
 import { themes } from "@/lib/themes";
 import "./globals.css";
 
@@ -64,7 +65,7 @@ export default async function RootLayout({
 
         <header className="fixed top-0 right-0 left-0 z-50 border-b border-border-warm bg-background/90 backdrop-blur-md">
           <TopBar contact={contact} />
-          <NavBar menu={menu} />
+          <NavBar menu={headerNav(menu)} />
         </header>
 
         <main id="main" tabIndex={-1} className="flex-1 pt-[136px] focus:outline-none md:pt-[100px]">

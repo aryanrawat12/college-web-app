@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { runNewsCheck } from "@/lib/news-tracker/check";
+import { getAdminClient } from "@/lib/supabase-auth";
 
 export const dynamic = "force-dynamic";
 
-function isAuthorized(request: Request): boolean {
+// Scheduled runs authenticate with the cron secret; manual runs from the
+// admin panel with the admin's session cookie.
+async function isAuthorized(request: Request): Promise<boolean> {
+  if (await getAdminClient()) return true;
+
   const secret = process.env.CRON_SECRET || process.env.NEWS_TRACKER_SECRET;
   if (!secret) {
     // Local/dev convenience: allow when no secret is configured.
@@ -18,7 +23,7 @@ function isAuthorized(request: Request): boolean {
 }
 
 export async function GET(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -29,7 +34,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!isAuthorized(request)) {
+  if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

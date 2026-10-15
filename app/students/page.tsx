@@ -1,6 +1,6 @@
 import Link from "next/link";
 import PageHeaderImage from "@/components/shared/PageHeaderImage";
-import { studentsMenu } from "@/lib/nav";
+import { studentCornerLinks } from "@/lib/nav";
 import { fetchNavMenu } from "@/lib/queries";
 
 export const metadata = {
@@ -10,12 +10,8 @@ export const metadata = {
 export const revalidate = 0;
 
 export default async function StudentsPage() {
-  // Same links as the header's "Students" dropdown (admin → Header Menu).
-  const menu = await fetchNavMenu();
-  const group = menu.find(
-    (e) => e.kind === "group" && e.group.label.toLowerCase() === "students",
-  );
-  const links = group?.kind === "group" ? group.group.items : studentsMenu.items;
+  // Header Menu rows with Dropdown = "Students" (admin → Header Menu).
+  const links = studentCornerLinks(await fetchNavMenu());
 
   return (
     <>

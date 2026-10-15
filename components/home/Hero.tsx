@@ -46,8 +46,8 @@ export default function Hero({
         <source src="/hero/campus-aerial.mp4" type="video/mp4" />
       </video>
       {/* Light, left-weighted overlays so the photo stays visible */}
-      <div className="absolute inset-0 -z-10 bg-brand-blue-dark/30" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-blue-dark/85 via-brand-blue-dark/35 to-transparent" />
+      <div className="absolute inset-0 -z-10 bg-brand-blue-dark/15" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-blue-dark/75 via-brand-blue-dark/25 to-transparent" />
 
       {/* Copy */}
       <div className="relative z-10 flex flex-1 items-center px-6 py-16 sm:px-10 lg:px-16">

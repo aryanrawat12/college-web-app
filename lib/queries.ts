@@ -25,6 +25,13 @@ import {
 import { testimonials as fallbackTestimonials } from "@/lib/testimonials-data";
 import { alumni as fallbackAlumni } from "@/lib/alumni-data";
 import { faqs as fallbackFaqs } from "@/lib/faq-data";
+import {
+  antiRaggingFallback,
+  lines,
+  type AntiRaggingDocument,
+  type AntiRaggingInfo,
+  type AntiRaggingMember,
+} from "@/lib/anti-ragging-data";
 import { buildNav, fallbackNav, type NavEntry } from "@/lib/nav";
 import { siteConfig } from "@/lib/site";
 import { resolveTheme, type ThemeName } from "@/lib/themes";
@@ -574,6 +581,65 @@ export type Policy = {
   description: string | null;
   pdfUrl: string;
 };
+
+// /anti-ragging: page text (single row), committee and document archive.
+// Blank admin fields fall back to the defaults in lib/anti-ragging-data.ts.
+export async function fetchAntiRagging(): Promise<{
+  info: AntiRaggingInfo;
+  members: AntiRaggingMember[];
+  documents: AntiRaggingDocument[];
+}> {
+  const fb = antiRaggingFallback;
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return { info: fb, members: [], documents: [] };
+  const [s, m, d] = await Promise.all([
+    supabase.from("anti_ragging_settings").select("*").eq("id", 1).maybeSingle(),
+    supabase
+      .from("anti_ragging_members")
+      .select("id, name, role, department, mobile, email")
+      .order("sort", { ascending: true }),
+    supabase
+      .from("anti_ragging_documents")
+      .select("id, title, year, pdf_url")
+      .order("year", { ascending: false })
+      .order("sort", { ascending: true }),
+  ]);
+  const r = s.data;
+  const text = (v: string | null | undefined, f: string) => v?.trim() || f;
+  const list = (v: string | null | undefined, f: string[]) =>
+    lines(v).length ? lines(v) : f;
+  return {
+    info: r
+      ? {
+          intro: text(r.intro, fb.intro),
+          helplinePhone: text(r.helpline_phone, fb.helplinePhone),
+          helplineEmail: text(r.helpline_email, fb.helplineEmail),
+          collegeContact: text(r.college_contact, fb.collegeContact),
+          whatIsRagging: list(r.what_is_ragging, fb.whatIsRagging),
+          punishments: list(r.punishments, fb.punishments),
+          undertaking: text(r.undertaking, fb.undertaking),
+          appointmentOrder: text(r.appointment_order, fb.appointmentOrder),
+          appointmentDate: text(r.appointment_date, fb.appointmentDate),
+          pdfUrl: text(r.pdf_url, fb.pdfUrl),
+          pdfLabel: text(r.pdf_label, fb.pdfLabel),
+        }
+      : fb,
+    members: (m.data ?? []).map((x) => ({
+      id: x.id,
+      name: x.name,
+      role: x.role ?? "",
+      department: x.department ?? "",
+      mobile: x.mobile ?? "",
+      email: x.email ?? "",
+    })),
+    documents: (d.data ?? []).map((x) => ({
+      id: x.id,
+      title: x.title,
+      year: x.year?.trim() || "Other",
+      pdfUrl: x.pdf_url,
+    })),
+  };
+}
 
 export async function fetchPolicies(): Promise<Policy[]> {
   const supabase = createServerSupabaseClient();

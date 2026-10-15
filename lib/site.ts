@@ -68,6 +68,7 @@ export const routes = {
   careersApply: "/careers/apply",
   idCard: "/id-card",
   policies: "/policies",
+  antiRagging: "/anti-ragging",
   documentsRequired: "/documents-required",
-  newsTracker: "/news-tracker",
+  newsTracker: "/admin/news-tracker", // admin-only tool
 } as const;

@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // News Tracker moved behind admin login.
+  async redirects() {
+    return [
+      { source: "/news-tracker", destination: "/admin/news-tracker", permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       {

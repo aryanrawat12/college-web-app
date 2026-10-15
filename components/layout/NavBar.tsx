@@ -224,12 +224,6 @@ export default function NavBar({ menu }: { menu: NavEntry[] }) {
           >
             Enquire
           </Link>
-          <Link
-            href={routes.apply}
-            className="hidden rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(214,134,42,.34)] transition-colors hover:bg-brand-yellow-hover sm:inline-flex"
-          >
-            Apply Now
-          </Link>
           <MobileNav menu={menu} />
         </div>
       </div>
@@ -246,7 +240,7 @@ export default function NavBar({ menu }: { menu: NavEntry[] }) {
         </Link>
         <Link
           href={routes.students}
-          className={`py-2 text-center text-[13px] font-bold transition-colors ${
+          className={`gold-sheen py-2 text-center text-[13px] font-bold transition-colors ${
             pathname === routes.students ? "bg-brand-blue-dark text-white" : "bg-brand-blue text-white hover:bg-brand-blue-dark"
           }`}
         >

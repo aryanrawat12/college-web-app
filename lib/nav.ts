@@ -22,7 +22,6 @@ export const aboutMenu: NavGroup = {
     { label: "FAQs", href: routes.faq },
     { label: "Mandatory Disclosures", href: routes.mandatoryDisclosures },
     { label: "Policies", href: routes.policies },
-    { label: "Careers", href: routes.careers },
   ],
 };
 
@@ -53,7 +52,6 @@ export const mediaMenu: NavGroup = {
     { label: "Gallery", href: routes.gallery },
     { label: "Notices & Announcements", href: routes.notices },
     { label: "Choupal (Grievance)", href: routes.choupal },
-    { label: "News Tracker", href: routes.newsTracker },
   ],
 };
 
@@ -62,10 +60,12 @@ export const studentsMenu: NavGroup = {
   items: [
     { label: "Documents (Checklist & Upload)", href: routes.documentsRequired },
     { label: "ID Card Details Form", href: routes.idCard },
+    { label: "Anti-Ragging Cell", href: routes.antiRagging },
   ],
 };
 
 // Top-level items with no dropdown.
+export const careersLink: NavLink = { label: "Careers", href: routes.careers };
 export const facultyLink: NavLink = { label: "Faculty", href: routes.faculty };
 export const placementsLink: NavLink = { label: "Placements", href: routes.placements };
 export const contactLink: NavLink = { label: "Contact", href: routes.contactUs };
@@ -83,11 +83,28 @@ export const fallbackNav: NavEntry[] = [
   { kind: "group", group: academicsMenu },
   { kind: "link", link: facultyLink },
   { kind: "group", group: admissionsMenu },
-  { kind: "group", group: studentsMenu },
+  { kind: "group", group: studentsMenu }, // Student Corner page, not the header
+  { kind: "link", link: careersLink },
   { kind: "link", link: placementsLink },
   { kind: "group", group: mediaMenu },
   { kind: "link", link: contactLink },
 ];
+
+// The "Students" dropdown isn't shown in the header: its links are the cards on
+// the Student Corner page (/students), reached from the top bar.
+export const studentCornerMenu = "Students";
+
+const isStudentCorner = (e: NavEntry) =>
+  e.kind === "group" && e.group.label.toLowerCase() === studentCornerMenu.toLowerCase();
+
+/** Entries for the header / mobile menu (everything except Student Corner). */
+export const headerNav = (menu: NavEntry[]) => menu.filter((e) => !isStudentCorner(e));
+
+/** Links for the Student Corner page. */
+export const studentCornerLinks = (menu: NavEntry[]): NavLink[] => {
+  const group = menu.find(isStudentCorner);
+  return group?.kind === "group" ? group.group.items : studentsMenu.items;
+};
 
 export type NavRow = { menu: string | null; label: string; href: string };
 

@@ -24,7 +24,14 @@ export type Field = {
 export type TableConfig = {
   table: string;
   label: string;
-  group: "Content" | "People" | "Academics" | "Placements" | "Site" | "Submissions";
+  group:
+    | "Content"
+    | "People"
+    | "Academics"
+    | "Placements"
+    | "Site"
+    | "Anti-Ragging"
+    | "Submissions";
   single?: boolean; // single-row (id=1) settings table
   readOnly?: boolean; // submissions — view only
   orderBy?: { column: string; ascending: boolean };
@@ -111,7 +118,7 @@ export const adminTables: TableConfig[] = [
     orderBy: { column: "sort", ascending: true },
     listFields: ["menu", "label", "href", "sort"],
     fields: [
-      { name: "menu", label: "Dropdown (e.g. About; blank = top-level link)" },
+      { name: "menu", label: "Dropdown (e.g. About; blank = top-level link; \"Students\" = Student Corner page cards)" },
       { name: "label", label: "Link Text" },
       { name: "href", label: "Link (/page or https://…)" },
       { name: "sort", label: "Order (lower = further left / higher up)", type: "number" },
@@ -350,6 +357,55 @@ export const adminTables: TableConfig[] = [
       { name: "category", label: "Category (e.g. Academic, Anti-Ragging, HR)" },
       { name: "description", label: "Short Description", type: "textarea" },
       { name: "pdf_url", label: "Policy PDF", type: "file" },
+      { name: "sort", label: "Sort", type: "number" },
+    ],
+  },
+  // ── Anti-Ragging (/anti-ragging) ──
+  {
+    table: "anti_ragging_settings",
+    label: "Page Text & PDF",
+    group: "Anti-Ragging",
+    single: true,
+    listFields: [],
+    fields: [
+      { name: "pdf_url", label: "Anti-Ragging PDF (download button at the end of the page)", type: "file" },
+      { name: "pdf_label", label: "Download Button Text" },
+      { name: "intro", label: "Introduction (blank line between paragraphs)", type: "textarea" },
+      { name: "helpline_phone", label: "National Helpline Number" },
+      { name: "helpline_email", label: "National Helpline Email" },
+      { name: "college_contact", label: "College Anti-Ragging Cell Contact (phone/email)" },
+      { name: "what_is_ragging", label: "What Constitutes Ragging (one point per line)", type: "textarea" },
+      { name: "punishments", label: "Punishments (one point per line)", type: "textarea" },
+      { name: "undertaking", label: "Undertaking / Affidavit Note", type: "textarea" },
+      { name: "appointment_order", label: "Committee Appointment Order No." },
+      { name: "appointment_date", label: "Date of Appointment" },
+    ],
+  },
+  {
+    table: "anti_ragging_members",
+    label: "Committee Members",
+    group: "Anti-Ragging",
+    orderBy: { column: "sort", ascending: true },
+    listFields: ["name", "role", "department", "mobile"],
+    fields: [
+      { name: "name", label: "Name" },
+      { name: "role", label: "Role (e.g. Chairperson, Member, Squad Head)" },
+      { name: "department", label: "Department / Associated With" },
+      { name: "mobile", label: "Mobile Number" },
+      { name: "email", label: "Email" },
+      { name: "sort", label: "Sort", type: "number" },
+    ],
+  },
+  {
+    table: "anti_ragging_documents",
+    label: "Documents (by year)",
+    group: "Anti-Ragging",
+    orderBy: { column: "sort", ascending: true },
+    listFields: ["year", "title"],
+    fields: [
+      { name: "title", label: "Title (e.g. Committee Order 2026-27)" },
+      { name: "year", label: "Year (e.g. 2026)" },
+      { name: "pdf_url", label: "PDF", type: "file" },
       { name: "sort", label: "Sort", type: "number" },
     ],
   },

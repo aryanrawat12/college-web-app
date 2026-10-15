@@ -16,7 +16,7 @@ export default function CopyRights() {
           <Link href={routes.approvals} className="hover:text-white">
             Approvals
           </Link>
-          <Link href={routes.choupal} className="hover:text-white">
+          <Link href={routes.antiRagging} className="hover:text-white">
             Anti-Ragging
           </Link>
           <Link href={routes.privacy} className="hover:text-white">

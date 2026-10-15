@@ -1,8 +1,10 @@
 "use client";
 /* eslint-disable react-hooks/set-state-in-effect */
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { routes } from "@/lib/site";
 import { createBrowserSupabaseClient } from "@/lib/supabase";
 import {
   adminTables,
@@ -20,6 +22,7 @@ const groups: TableConfig["group"][] = [
   "People",
   "Placements",
   "Content",
+  "Anti-Ragging",
   "Submissions",
 ];
 
@@ -83,6 +86,17 @@ function Dashboard({ supabase }: { supabase: any }) {
             </ul>
           </div>
         ))}
+        <div>
+          <div className="mb-1.5 font-mono text-[10.5px] uppercase tracking-wide text-faint">
+            Tools
+          </div>
+          <Link
+            href={routes.newsTracker}
+            className="block rounded-md px-2.5 py-1.5 text-sm text-foreground transition-colors hover:bg-cream-2"
+          >
+            News Tracker →
+          </Link>
+        </div>
       </aside>
       <main>
         <TableManager key={active.table} supabase={supabase} config={active} />

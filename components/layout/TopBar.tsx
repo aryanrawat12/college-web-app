@@ -46,11 +46,6 @@ export default function TopBar({ contact }: { contact: ContactInfo }) {
           className="hidden shrink-0 items-center gap-4 md:flex"
           aria-label="Top utility navigation"
         >
-          {/* News Tracker yields to the ticker on tablets (it's also under Media) */}
-          <a href={routes.newsTracker} className={`${utilLinkClass} hidden lg:inline`}>
-            News Tracker
-          </a>
-          <span className="hidden text-white/25 lg:inline">|</span>
           <a
             href={siteConfig.studentLoginUrl}
             target="_blank"
@@ -64,7 +59,7 @@ export default function TopBar({ contact }: { contact: ContactInfo }) {
             Fee Payment
           </a>
           <span className="text-white/25">|</span>
-          <a href={routes.students} className={utilLinkClass}>
+          <a href={routes.students} className="gold-shine transition-opacity hover:opacity-85">
             Student Corner
           </a>
           {contact.helpline && (

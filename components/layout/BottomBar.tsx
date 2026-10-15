@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { aboutMenu, academicsMenu } from "@/lib/nav";
+import { aboutMenu, academicsMenu, facultyLink } from "@/lib/nav";
 import type { ContactInfo } from "@/lib/queries";
 import { routes, siteConfig } from "@/lib/site";
 
@@ -53,7 +53,7 @@ export default function BottomBar({ contact }: { contact: ContactInfo }) {
       <div className="container-page grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
         <div className="flex h-full flex-col">
           <div className="mb-4 flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-gradient-to-br from-[#1c3f72] to-brand-blue-dark font-serif text-xl font-bold text-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-gradient-to-br from-brand-blue to-brand-blue-dark font-serif text-xl font-bold text-white">
               A
             </span>
             <div>
@@ -111,7 +111,7 @@ export default function BottomBar({ contact }: { contact: ContactInfo }) {
           )}
         </div>
 
-        <FooterCol title="Academics" links={academicsMenu.items} />
+        <FooterCol title="Academics" links={[...academicsMenu.items, facultyLink]} />
         <FooterCol title="About" links={[...aboutMenu.items, ...quickLinks.slice(0, 2)]} />
 
         <div>

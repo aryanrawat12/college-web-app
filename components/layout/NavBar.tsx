@@ -7,16 +7,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import MobileNav from "@/components/layout/MobileNav";
 import NavBranding from "@/components/layout/NavBranding";
 import { navSchools } from "@/lib/home-data";
-import {
-  aboutMenu,
-  academicsMenu,
-  admissionsMenu,
-  contactLink,
-  mediaMenu,
-  placementsLink,
-  studentsMenu,
-  type NavGroup,
-} from "@/lib/nav";
+import type { NavEntry, NavGroup } from "@/lib/nav";
 import { routes, siteConfig } from "@/lib/site";
 
 const navLinkClass =
@@ -87,7 +78,7 @@ function NavDropdown({ label, items }: NavGroup) {
           {items.map((item) => {
             const active = pathname === item.href;
             return (
-              <li key={item.href} role="none">
+              <li key={`${item.label}:${item.href}`} role="none">
                 <Link
                   href={item.href}
                   role="menuitem"
@@ -113,7 +104,7 @@ function NavDropdown({ label, items }: NavGroup) {
 }
 
 /** Academics mega-menu — department cards + program-finder CTA. */
-function AcademicsMega() {
+function AcademicsMega({ label }: { label: string }) {
   const { open, setOpen, ref } = useDropdown();
   const menuId = useId();
 
@@ -127,7 +118,7 @@ function AcademicsMega() {
         aria-controls={menuId}
         onClick={() => setOpen((p) => !p)}
       >
-        {academicsMenu.label}
+        {label}
         {chevron(open)}
       </button>
       {open && (
@@ -180,7 +171,7 @@ function AcademicsMega() {
   );
 }
 
-export default function NavBar() {
+export default function NavBar({ menu }: { menu: NavEntry[] }) {
   const pathname = usePathname();
   const directLinkClass = (href: string) =>
     `${navLinkClass} ${pathname === href ? "text-brand-blue" : ""}`;
@@ -207,26 +198,23 @@ export default function NavBar() {
         </div>
 
         <div className="hidden items-center justify-center gap-1 xl:flex">
-          <Link href={routes.home} className={directLinkClass(routes.home)}>
-            Home
-          </Link>
-          <NavDropdown {...aboutMenu} />
-          <AcademicsMega />
-          <NavDropdown {...admissionsMenu} />
-          <NavDropdown {...studentsMenu} />
-          <Link
-            href={placementsLink.href}
-            className={directLinkClass(placementsLink.href)}
-          >
-            {placementsLink.label}
-          </Link>
-          <NavDropdown {...mediaMenu} />
-          <Link
-            href={contactLink.href}
-            className={directLinkClass(contactLink.href)}
-          >
-            {contactLink.label}
-          </Link>
+          {menu.map((entry) =>
+            entry.kind === "link" ? (
+              <Link
+                key={`link:${entry.link.label}`}
+                href={entry.link.href}
+                target={entry.link.external ? "_blank" : undefined}
+                rel={entry.link.external ? "noopener noreferrer" : undefined}
+                className={directLinkClass(entry.link.href)}
+              >
+                {entry.link.label}
+              </Link>
+            ) : entry.group.label === "Academics" ? (
+              <AcademicsMega key="group:Academics" label={entry.group.label} />
+            ) : (
+              <NavDropdown key={`group:${entry.group.label}`} {...entry.group} />
+            ),
+          )}
         </div>
 
         <div className="flex items-center justify-end gap-2.5">
@@ -242,15 +230,28 @@ export default function NavBar() {
           >
             Apply Now
           </Link>
-          {/* Fee Payment surfaced in the bar on small screens (TopBar hides it < md) */}
-          <Link
-            href={routes.payment}
-            className="rounded-lg bg-brand-yellow px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-brand-yellow-hover md:hidden"
-          >
-            Fee Payment
-          </Link>
-          <MobileNav />
+          <MobileNav menu={menu} />
         </div>
+      </div>
+
+      {/* Quick links on small screens (the TopBar utility links hide < md) */}
+      <div className="grid grid-cols-2 border-t border-border-warm md:hidden">
+        <Link
+          href={routes.payment}
+          className={`gold-sheen py-2 text-center text-[13px] font-bold transition-colors ${
+            pathname === routes.payment ? "bg-brand-yellow-hover text-white" : "bg-brand-yellow text-white hover:bg-brand-yellow-hover"
+          }`}
+        >
+          Fee Payment
+        </Link>
+        <Link
+          href={routes.students}
+          className={`py-2 text-center text-[13px] font-bold transition-colors ${
+            pathname === routes.students ? "bg-brand-blue-dark text-white" : "bg-brand-blue text-white hover:bg-brand-blue-dark"
+          }`}
+        >
+          Student Corner
+        </Link>
       </div>
     </nav>
   );

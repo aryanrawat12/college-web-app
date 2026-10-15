@@ -6,7 +6,8 @@ import CopyRights from "@/components/layout/CopyRights";
 import NavBar from "@/components/layout/NavBar";
 import TopBar from "@/components/layout/TopBar";
 import FloatingActions from "@/components/shared/FloatingActions";
-import { fetchContactInfo } from "@/lib/queries";
+import { fetchContactInfo, fetchNavMenu, fetchTheme } from "@/lib/queries";
+import { themes } from "@/lib/themes";
 import "./globals.css";
 
 // Lora everywhere — one family for sans/serif/mono (see globals.css).
@@ -25,10 +26,13 @@ export const metadata: Metadata = {
     "Akhil Bharti Group of Institutes, Bhopal — Pharmacy, Management and Teacher Education programmes. Approved by AICTE & PCI, affiliated to RGPV Bhopal.",
 };
 
-export const viewport: Viewport = {
-  themeColor: "#16335f",
-  colorScheme: "light",
-};
+export async function generateViewport(): Promise<Viewport> {
+  const theme = await fetchTheme();
+  return {
+    themeColor: themes.find((t) => t.value === theme)?.themeColor,
+    colorScheme: "light",
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -39,10 +43,15 @@ export default async function RootLayout({
   // admin-editable (site_settings), and a statically prebuilt page would keep
   // showing the values from build time.
   await connection();
-  const contact = await fetchContactInfo();
+  const [contact, menu, theme] = await Promise.all([
+    fetchContactInfo(),
+    fetchNavMenu(),
+    fetchTheme(),
+  ]);
   return (
     <html
       lang="en"
+      data-theme={theme}
       className={`${lora.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
@@ -55,10 +64,10 @@ export default async function RootLayout({
 
         <header className="fixed top-0 right-0 left-0 z-50 border-b border-border-warm bg-background/90 backdrop-blur-md">
           <TopBar contact={contact} />
-          <NavBar />
+          <NavBar menu={menu} />
         </header>
 
-        <main id="main" tabIndex={-1} className="flex-1 pt-[100px] focus:outline-none">
+        <main id="main" tabIndex={-1} className="flex-1 pt-[136px] focus:outline-none md:pt-[100px]">
           {children}
         </main>
 

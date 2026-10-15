@@ -4,12 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import {
-  contactLink,
-  menuGroups,
-  placementsLink,
-  type NavLink,
-} from "@/lib/nav";
+import type { NavEntry, NavLink } from "@/lib/nav";
 import { routes } from "@/lib/site";
 
 function ItemLink({
@@ -38,7 +33,7 @@ function ItemLink({
   );
 }
 
-export default function MobileNav() {
+export default function MobileNav({ menu }: { menu: NavEntry[] }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -123,15 +118,18 @@ export default function MobileNav() {
             </div>
 
             <nav aria-label="Mobile navigation" className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-3">
-              <ItemLink
-                item={{ label: "Home", href: routes.home }}
-                pathname={pathname}
-                onNavigate={close}
-              />
-              {menuGroups.map((group) => (
-                <details key={group.label} className="group border-t border-brand-blue/5">
+              {menu.map((entry) =>
+                entry.kind === "link" ? (
+                  <ItemLink
+                    key={`link:${entry.link.label}`}
+                    item={entry.link}
+                    pathname={pathname}
+                    onNavigate={close}
+                  />
+                ) : (
+                <details key={`group:${entry.group.label}`} className="group border-t border-brand-blue/5">
                   <summary className="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-semibold text-brand-blue">
-                    {group.label}
+                    {entry.group.label}
                     <svg
                       aria-hidden="true"
                       viewBox="0 0 20 20"
@@ -146,9 +144,9 @@ export default function MobileNav() {
                     </svg>
                   </summary>
                   <div className="pb-2 pl-2">
-                    {group.items.map((item) => (
+                    {entry.group.items.map((item) => (
                       <ItemLink
-                        key={item.href}
+                        key={`${item.label}:${item.href}`}
                         item={item}
                         pathname={pathname}
                         onNavigate={close}
@@ -156,11 +154,8 @@ export default function MobileNav() {
                     ))}
                   </div>
                 </details>
-              ))}
-              <div className="border-t border-brand-blue/5">
-                <ItemLink item={placementsLink} pathname={pathname} onNavigate={close} />
-                <ItemLink item={contactLink} pathname={pathname} onNavigate={close} />
-              </div>
+                ),
+              )}
             </nav>
 
             <div className="shrink-0 space-y-2 border-t border-border-warm p-4">

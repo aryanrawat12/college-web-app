@@ -366,6 +366,7 @@ export type Database = {
       id_card_submissions: {
         Row: {
           batch: string
+          blood_group: string | null
           contact: string
           course: string
           created_at: string
@@ -376,10 +377,12 @@ export type Database = {
           local_address: string
           mother_name: string
           name: string
+          parent_spouse_contact: string | null
           photo_key: string
         }
         Insert: {
           batch: string
+          blood_group?: string | null
           contact: string
           course: string
           created_at?: string
@@ -390,10 +393,12 @@ export type Database = {
           local_address: string
           mother_name: string
           name: string
+          parent_spouse_contact?: string | null
           photo_key: string
         }
         Update: {
           batch?: string
+          blood_group?: string | null
           contact?: string
           course?: string
           created_at?: string
@@ -404,6 +409,7 @@ export type Database = {
           local_address?: string
           mother_name?: string
           name?: string
+          parent_spouse_contact?: string | null
           photo_key?: string
         }
         Relationships: []
@@ -518,6 +524,12 @@ export type Database = {
         Update: { created_at?: string; description?: string; id?: never; sort?: number }
         Relationships: []
       }
+      nav_links: {
+        Row: { href: string; id: number; label: string; menu: string | null; sort: number }
+        Insert: { href: string; id?: never; label: string; menu?: string | null; sort?: number }
+        Update: { href?: string; id?: never; label?: string; menu?: string | null; sort?: number }
+        Relationships: []
+      }
       payment_links: {
         Row: { description: string | null; id: number; institute: string; sort: number; url: string }
         Insert: { description?: string | null; id?: never; institute: string; sort?: number; url: string }
@@ -621,6 +633,7 @@ export type Database = {
           maps_query: string | null
           maps_url: string | null
           prospectus_url: string | null
+          theme: string | null
           whatsapp: string | null
           youtube_url: string | null
         }
@@ -639,6 +652,7 @@ export type Database = {
           maps_query?: string | null
           maps_url?: string | null
           prospectus_url?: string | null
+          theme?: string | null
           whatsapp?: string | null
           youtube_url?: string | null
         }
@@ -657,6 +671,7 @@ export type Database = {
           maps_query?: string | null
           maps_url?: string | null
           prospectus_url?: string | null
+          theme?: string | null
           whatsapp?: string | null
           youtube_url?: string | null
         }

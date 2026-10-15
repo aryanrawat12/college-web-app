@@ -21,6 +21,7 @@ export const aboutMenu: NavGroup = {
     { label: "Alumni", href: routes.alumni },
     { label: "FAQs", href: routes.faq },
     { label: "Mandatory Disclosures", href: routes.mandatoryDisclosures },
+    { label: "Policies", href: routes.policies },
     { label: "Careers", href: routes.careers },
   ],
 };
@@ -32,7 +33,6 @@ export const academicsMenu: NavGroup = {
     { label: "Pharmacy", href: routes.pharmacy },
     { label: "Management (MBA)", href: routes.management },
     { label: "Teaching Education (B.Ed & D.El.Ed)", href: routes.teachingEducation },
-    { label: "Faculty", href: routes.faculty },
   ],
 };
 
@@ -62,18 +62,61 @@ export const studentsMenu: NavGroup = {
   items: [
     { label: "Documents (Checklist & Upload)", href: routes.documentsRequired },
     { label: "ID Card Details Form", href: routes.idCard },
-    { label: "Policies", href: routes.policies },
   ],
 };
 
 // Top-level items with no dropdown.
+export const facultyLink: NavLink = { label: "Faculty", href: routes.faculty };
 export const placementsLink: NavLink = { label: "Placements", href: routes.placements };
 export const contactLink: NavLink = { label: "Contact", href: routes.contactUs };
 
-export const menuGroups: NavGroup[] = [
-  aboutMenu,
-  academicsMenu,
-  admissionsMenu,
-  studentsMenu,
-  mediaMenu,
+// ── Header menu (admin-editable via the `nav_links` table) ──
+// The header renders an ordered list of entries: either a direct link or a
+// dropdown group. The constants above are the static fallback.
+
+export type NavEntry =
+  | { kind: "link"; link: NavLink }
+  | { kind: "group"; group: NavGroup };
+
+export const fallbackNav: NavEntry[] = [
+  { kind: "group", group: aboutMenu },
+  { kind: "group", group: academicsMenu },
+  { kind: "link", link: facultyLink },
+  { kind: "group", group: admissionsMenu },
+  { kind: "group", group: studentsMenu },
+  { kind: "link", link: placementsLink },
+  { kind: "group", group: mediaMenu },
+  { kind: "link", link: contactLink },
 ];
+
+export type NavRow = { menu: string | null; label: string; href: string };
+
+/**
+ * Turn sorted `nav_links` rows into header entries. Rows with a `menu` are
+ * grouped into that dropdown (placed where its first item appears); rows with
+ * no `menu` are top-level links. Absolute http(s) URLs open in a new tab.
+ */
+export function buildNav(rows: NavRow[]): NavEntry[] {
+  const entries: NavEntry[] = [];
+  const groups = new Map<string, NavGroup>();
+  for (const r of rows) {
+    const link: NavLink = {
+      label: r.label,
+      href: r.href,
+      external: /^https?:\/\//i.test(r.href),
+    };
+    const menu = r.menu?.trim();
+    if (!menu) {
+      entries.push({ kind: "link", link });
+      continue;
+    }
+    let group = groups.get(menu);
+    if (!group) {
+      group = { label: menu, items: [] };
+      groups.set(menu, group);
+      entries.push({ kind: "group", group });
+    }
+    group.items.push(link);
+  }
+  return entries;
+}

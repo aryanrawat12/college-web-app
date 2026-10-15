@@ -12,6 +12,8 @@
   --brand-yellow: #d6862a; /* warm gold (accent / CTA) */
   --brand-yellow-hover: #bf7320; /* gold hover */
   --brand-gold-light: #e3a857; /* light gold (on-navy eyebrows) */
+  --brand-yellow-ink: #d6862a; /* gold *text* on light backgrounds */
+  --on-accent: #ffffff; /* text on gold buttons */
 
   /* Neutrals */
   --surface: #ffffff;
@@ -21,6 +23,32 @@
   --border-2: #e9e3d6;
   --cream-2: #f4f1ea;
   --tint: #f7f4ee;
+}
+
+/* Admin-selectable themes (Site Settings → Theme, sets <html data-theme>).
+   Each maps the five palette colours onto the brand tokens; the bright yellow
+   gets dark button text and a deeper gold for text on cream, for contrast. */
+[data-theme="royal-purple"] {
+  /* coolors.co/palette/3d0066-510087-5c0099-fdc500-ffd500 */
+  --brand-blue: #5c0099;
+  --brand-blue-dark: #510087;
+  --brand-navy-deep: #3d0066;
+  --brand-yellow: #fdc500;
+  --brand-yellow-hover: #ffd500;
+  --brand-gold-light: #ffd500;
+  --brand-yellow-ink: #8a6a00;
+  --on-accent: #3d0066;
+}
+[data-theme="ocean-blue"] {
+  /* coolors.co/palette/00296b-003f88-00509d-fdc500-ffd500 */
+  --brand-blue: #00509d;
+  --brand-blue-dark: #003f88;
+  --brand-navy-deep: #00296b;
+  --brand-yellow: #fdc500;
+  --brand-yellow-hover: #ffd500;
+  --brand-gold-light: #ffd500;
+  --brand-yellow-ink: #8a6a00;
+  --on-accent: #00296b;
 }
 
 @theme inline {
@@ -213,6 +241,66 @@ h4 {
   display: none;
 }
 
+/* Theme contrast helpers (no-ops in the default theme, where ink = gold and
+   on-accent = white). Unlayered, so they win over Tailwind's utilities. */
+.text-brand-yellow {
+  color: var(--brand-yellow-ink);
+}
+:is(.bg-brand-blue, .bg-brand-blue-dark, .bg-brand-navy-deep) .text-brand-yellow {
+  color: var(--brand-yellow); /* bright gold stays bright on dark panels */
+}
+:is(.bg-brand-yellow, .bg-brand-yellow-hover).text-white {
+  color: var(--on-accent);
+}
+
+/* Fee Payment highlight — a golden light sweeping across.
+   .gold-shine: gold gradient text (navy top bar).
+   .gold-sheen: light band + glow over a solid gold button. */
+@keyframes gold-shine {
+  0%, 35% { background-position: 150% 0; }
+  70%, 100% { background-position: -50% 0; }
+}
+@keyframes gold-sheen {
+  0%, 40% { transform: translateX(-120%) skewX(-20deg); }
+  80%, 100% { transform: translateX(320%) skewX(-20deg); }
+}
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(227, 168, 87, 0); }
+  50% { box-shadow: 0 0 14px 2px rgba(227, 168, 87, 0.55); }
+}
+.gold-shine {
+  font-weight: 700;
+  color: var(--brand-gold-light); /* fallback */
+  background: linear-gradient(
+    100deg,
+    var(--brand-yellow) 0%,
+    var(--brand-gold-light) 35%,
+    #fff6d8 50%,
+    var(--brand-gold-light) 65%,
+    var(--brand-yellow) 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 6px rgba(227, 168, 87, 0.45));
+  animation: gold-shine 3.5s ease-in-out infinite;
+}
+.gold-sheen {
+  position: relative;
+  overflow: hidden;
+  animation: gold-glow 3.5s ease-in-out infinite;
+}
+.gold-sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, rgba(255, 246, 216, 0.75), transparent);
+  pointer-events: none;
+  animation: gold-sheen 3.5s ease-in-out infinite;
+}
+
 /* Respect reduced-motion: stop all marquees/auto-scroll, neutralise transforms */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -227,9 +315,15 @@ h4 {
   .marquee-single,
   .vertical-scroll-track,
   .fade-up,
-  .card-in {
+  .card-in,
+  .gold-shine,
+  .gold-sheen,
+  .gold-sheen::after {
     animation: none !important;
     transform: none !important;
+  }
+  .gold-sheen::after {
+    display: none;
   }
   .reveal {
     opacity: 1 !important;

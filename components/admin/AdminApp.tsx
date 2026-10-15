@@ -605,6 +605,18 @@ function RowForm({
                 Select multiple files at once. Click × to remove. They appear in the campus gallery.
               </p>
             </div>
+          ) : f.type === "select" ? (
+            <select
+              value={values[f.name] ?? f.options?.[0]?.value ?? ""}
+              onChange={(e) => set(f.name, e.target.value)}
+              className="w-full rounded-lg border border-border-warm-2 bg-surface px-3 py-2 text-sm focus:border-brand-blue focus:outline-none"
+            >
+              {f.options?.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
           ) : (
             <input
               type={f.type === "number" || f.type === "date" ? f.type : "text"}

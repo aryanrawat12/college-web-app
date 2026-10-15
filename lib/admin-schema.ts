@@ -1,3 +1,5 @@
+import { themes } from "@/lib/themes";
+
 // Config that drives the generic admin CRUD. Each entry maps a DB table to its
 // editable fields. `single` tables are one-row settings (id = 1).
 
@@ -9,12 +11,14 @@ export type FieldType =
   | "images"
   | "file" // PDF upload (public URL)
   | "date"
-  | "url";
+  | "url"
+  | "select"; // pick one of `options`
 
 export type Field = {
   name: string;
   label: string;
   type?: FieldType; // default "text"
+  options?: readonly { value: string; label: string }[]; // for "select"
 };
 
 export type TableConfig = {
@@ -42,6 +46,7 @@ export const adminTables: TableConfig[] = [
     single: true,
     listFields: [],
     fields: [
+      { name: "theme", label: "Site Theme (colours)", type: "select", options: themes },
       { name: "helpline", label: "Helpline" },
       { name: "whatsapp", label: "WhatsApp (digits, intl)" },
       { name: "email1", label: "Email 1" },
@@ -97,6 +102,19 @@ export const adminTables: TableConfig[] = [
       { name: "description", label: "Description", type: "textarea" },
       { name: "url", label: "Payment URL", type: "url" },
       { name: "sort", label: "Sort", type: "number" },
+    ],
+  },
+  {
+    table: "nav_links",
+    label: "Header Menu",
+    group: "Site",
+    orderBy: { column: "sort", ascending: true },
+    listFields: ["menu", "label", "href", "sort"],
+    fields: [
+      { name: "menu", label: "Dropdown (e.g. About; blank = top-level link)" },
+      { name: "label", label: "Link Text" },
+      { name: "href", label: "Link (/page or https://…)" },
+      { name: "sort", label: "Order (lower = further left / higher up)", type: "number" },
     ],
   },
   {
@@ -391,9 +409,11 @@ export const adminTables: TableConfig[] = [
       { name: "name", label: "Name" },
       { name: "course", label: "Course" },
       { name: "dob", label: "Date of Birth" },
+      { name: "blood_group", label: "Blood Group" },
       { name: "contact", label: "Contact No." },
       { name: "father_name", label: "Father's Name" },
       { name: "mother_name", label: "Mother's Name" },
+      { name: "parent_spouse_contact", label: "Parent / Spouse Contact No." },
       { name: "local_address", label: "Local Address" },
       { name: "photo_key", label: "Photo (link valid 7 days)" },
       { name: "created_at", label: "Submitted On" },

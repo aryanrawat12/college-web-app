@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { FacultyMember } from "@/components/faculty/FacultyGrid";
 import type { CampusEvent } from "@/lib/events";
 import { facultyMembers as fallbackFaculty } from "@/lib/faculty-data";
@@ -24,7 +25,9 @@ import {
 import { testimonials as fallbackTestimonials } from "@/lib/testimonials-data";
 import { alumni as fallbackAlumni } from "@/lib/alumni-data";
 import { faqs as fallbackFaqs } from "@/lib/faq-data";
+import { buildNav, fallbackNav, type NavEntry } from "@/lib/nav";
 import { siteConfig } from "@/lib/site";
+import { resolveTheme, type ThemeName } from "@/lib/themes";
 import { createServerSupabaseClient } from "@/lib/supabase";
 
 const DEFAULT_FACULTY_PHOTO = "/faculty/faculty.jpg";
@@ -397,6 +400,19 @@ export async function fetchPaymentLinks(): Promise<PaymentLink[]> {
   }));
 }
 
+// Header menu — admin-editable via `nav_links`; falls back to lib/nav.ts.
+export async function fetchNavMenu(): Promise<NavEntry[]> {
+  const supabase = createServerSupabaseClient();
+  if (!supabase) return fallbackNav;
+  const { data, error } = await supabase
+    .from("nav_links")
+    .select("menu, label, href")
+    .order("sort", { ascending: true })
+    .order("id", { ascending: true });
+  if (error || !data?.length) return fallbackNav;
+  return buildNav(data);
+}
+
 export type SiteSettings = {
   helpline: string;
   whatsapp: string;
@@ -411,6 +427,7 @@ export type SiteSettings = {
   prospectusUrl: string;
   heroTitle: string;
   heroSubtitle: string;
+  theme: ThemeName;
 };
 
 export type SectionText = {
@@ -479,7 +496,8 @@ export async function fetchContactInfo(): Promise<ContactInfo> {
   };
 }
 
-export async function fetchSiteSettings(): Promise<SiteSettings | null> {
+// cache(): the root layout reads settings for both contact info and theme.
+export const fetchSiteSettings = cache(async (): Promise<SiteSettings | null> => {
   const supabase = createServerSupabaseClient();
   if (!supabase) return null;
   const { data, error } = await supabase
@@ -504,7 +522,12 @@ export async function fetchSiteSettings(): Promise<SiteSettings | null> {
     prospectusUrl: data.prospectus_url ?? "",
     heroTitle: data.hero_title ?? "",
     heroSubtitle: data.hero_subtitle ?? "",
+    theme: resolveTheme(data.theme),
   };
+});
+
+export async function fetchTheme(): Promise<ThemeName> {
+  return (await fetchSiteSettings())?.theme ?? "default";
 }
 
 export type Job = {

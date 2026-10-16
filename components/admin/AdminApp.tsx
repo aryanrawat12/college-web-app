@@ -193,10 +193,20 @@ function TableManager({
   async function save(values: Row) {
     setMsg("");
     let error;
-    if (values.id != null) {
+    if (config.single) {
+      // Singleton tables use a plain `id int default 1`, and the row may not
+      // exist yet — upsert is safe here.
+      ({ error } = await supabase.from(config.table).upsert(values));
+    } else if (values.id != null) {
+      // List tables use `id ... GENERATED ALWAYS AS IDENTITY`: upsert sends
+      // INSERT ... ON CONFLICT with an explicit id, which Postgres rejects
+      // ("cannot insert a non-DEFAULT value into column id"). Update in place
+      // and leave id out of the SET list.
+      const { id, ...rest } = values;
       ({ error } = await supabase
         .from(config.table)
-        .upsert(values));
+        .update(rest)
+        .eq("id", id));
     } else {
       ({ error } = await supabase.from(config.table).insert(values));
     }
